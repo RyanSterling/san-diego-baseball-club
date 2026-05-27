@@ -17,7 +17,9 @@
       "Bash(git init:*)",
       "Bash(git add:*)",
       "Bash(git commit -m \"$\\(cat <<''EOF''\nInitial commit: San Diego Baseball Club website\n\nFull-stack Next.js application with:\n- Public site with schedule, roster, stats, and practice pages\n- Custom admin dashboard for managing games, players, seasons, practices, and team fund\n- Sanity CMS integration for content management\n- AI-powered stats entry from game photos\n- Dark theme with custom fonts and brand colors\n\nCo-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>\nEOF\n\\)\")",
-      "Bash(git push:*)"
+      "Bash(git push:*)",
+      "Bash(git commit -m \"$\\(cat <<''EOF''\nFix BoxScore null handling and dark theme titles\n\n- Fix BoxScore crash when ourInnings/theirInnings are null\n- Add dark prop to TwoToneTitle for dark backgrounds\n- Update game detail page with dark title variants\n- Clean up stat highlighting colors\n\nCo-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>\nEOF\n\\)\")",
+      "Bash(git commit -m \"$\\(cat <<''EOF''\nUpdate player card placeholder and footer styling\n\n- Change roster placeholder circle from teal to subtle dark \\(bg-white/10\\)\n- Remove teal border from footer top\n\nCo-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>\nEOF\n\\)\")"
     ],
     "additionalDirectories": [
       "/Users/ryansterling/Desktop/Code Projects/San Diego Baseball Club"

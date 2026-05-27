@@ -258,7 +258,7 @@ export default async function HomePage({ searchParams }: PageProps) {
                   </div>
 
                   {/* Circular Photo */}
-                  <div className="w-28 h-28 mx-auto rounded-full bg-teal overflow-hidden relative">
+                  <div className="w-28 h-28 mx-auto rounded-full bg-white/10 overflow-hidden relative">
                     {player.photo ? (
                       <Image
                         src={urlFor(player.photo).width(224).height(224).url()}
