@@ -286,26 +286,28 @@ export default async function HomePage({ searchParams }: PageProps) {
                     )}
                   </div>
 
-                  {/* Orange Circle Background */}
-                  <div className="absolute right-0 top-1/2 -translate-y-1/2 w-48 h-48 bg-orange rounded-full translate-x-12" />
+                  {/* Orange Circle Background - only show for players with photos */}
+                  {player.photo && (
+                    <div className="absolute -right-40 top-1/2 -translate-y-1/2 w-96 h-96 bg-orange rounded-full" />
+                  )}
 
-                  {/* Player Photo */}
-                  <div className="absolute right-4 top-1/2 -translate-y-1/2 w-36 h-36 rounded-full overflow-hidden z-10">
-                    {player.photo ? (
+                  {/* Player Photo or Placeholder Icon */}
+                  {player.photo ? (
+                    <div className="absolute right-0 top-0 bottom-0 w-44 z-10">
                       <Image
-                        src={urlFor(player.photo).width(288).height(288).url()}
+                        src={urlFor(player.photo).width(352).height(384).url()}
                         alt={player.name}
                         fill
-                        className="object-cover"
+                        className="object-cover object-top"
                       />
-                    ) : (
-                      <div className="absolute inset-0 flex items-center justify-center bg-white/10 text-white/40">
-                        <svg className="w-16 h-16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                        </svg>
-                      </div>
-                    )}
-                  </div>
+                    </div>
+                  ) : (
+                    <div className="absolute right-8 top-1/2 -translate-y-1/2 z-10">
+                      <svg className="w-24 h-24 text-white/15" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                      </svg>
+                    </div>
+                  )}
                 </Link>
               ))}
           </div>
