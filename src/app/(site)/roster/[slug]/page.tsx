@@ -129,70 +129,64 @@ export default async function PlayerDetailPage({ params, searchParams }: PagePro
       </section>
 
       {/* Stats Section */}
-      <section className="bg-cream py-8">
+      <section className="bg-dark text-white py-8">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="font-headline text-2xl uppercase tracking-tight text-dark mb-6">
-            <span className="text-dark/50">2026</span> Season
+          <h2 className="font-headline text-2xl uppercase tracking-tight mb-6">
+            <span className="text-white/50">2026</span> Season
           </h2>
 
           {gamesWithStats.length === 0 ? (
-            <p className="text-dark/50">No stats recorded for this season.</p>
+            <p className="text-white/50">No stats recorded for this season.</p>
           ) : (
             <div className="space-y-8">
               {/* Batting Stats Table */}
-              <div className="bg-white border border-dark/10 overflow-hidden">
+              <div className="bg-white/5 border border-white/10 overflow-hidden">
                 <div className="overflow-x-auto">
-                  <table className="stats-table">
-                    <thead className="bg-dark text-white">
+                  <table className="w-full text-sm">
+                    <thead className="bg-white/10">
                       <tr>
-                        <th className="!text-white !border-b-0 text-left">Season</th>
-                        <th className="!text-white !border-b-0 stat-col">G</th>
-                        <th className="!text-white !border-b-0 stat-col">AB</th>
-                        <th className="!text-white !border-b-0 stat-col">R</th>
-                        <th className="!text-white !border-b-0 stat-col">H</th>
-                        <th className="!text-white !border-b-0 stat-col hidden sm:table-cell">2B</th>
-                        <th className="!text-white !border-b-0 stat-col hidden sm:table-cell">3B</th>
-                        <th className="!text-white !border-b-0 stat-col">HR</th>
-                        <th className="!text-white !border-b-0 stat-col">RBI</th>
-                        <th className="!text-white !border-b-0 stat-col hidden md:table-cell">BB</th>
-                        <th className="!text-white !border-b-0 stat-col hidden md:table-cell">SO</th>
-                        <th className="!text-white !border-b-0 stat-col hidden lg:table-cell">SB</th>
-                        <th className="!text-white !border-b-0 stat-col">AVG</th>
-                        <th className="!text-white !border-b-0 stat-col hidden lg:table-cell">OBP</th>
-                        <th className="!text-white !border-b-0 stat-col hidden lg:table-cell">SLG</th>
-                        <th className="!text-white !border-b-0 stat-col hidden xl:table-cell">OPS</th>
+                        <th className="text-left px-4 py-3 font-headline uppercase text-xs tracking-wide text-white/70">Season</th>
+                        <th className="text-center px-2 py-3 font-headline uppercase text-xs tracking-wide text-white/70">G</th>
+                        <th className="text-center px-2 py-3 font-headline uppercase text-xs tracking-wide text-white/70">AB</th>
+                        <th className="text-center px-2 py-3 font-headline uppercase text-xs tracking-wide text-white/70">R</th>
+                        <th className="text-center px-2 py-3 font-headline uppercase text-xs tracking-wide text-white/70">H</th>
+                        <th className="text-center px-2 py-3 font-headline uppercase text-xs tracking-wide text-white/70 hidden sm:table-cell">2B</th>
+                        <th className="text-center px-2 py-3 font-headline uppercase text-xs tracking-wide text-white/70 hidden sm:table-cell">3B</th>
+                        <th className="text-center px-2 py-3 font-headline uppercase text-xs tracking-wide text-white/70">HR</th>
+                        <th className="text-center px-2 py-3 font-headline uppercase text-xs tracking-wide text-white/70">RBI</th>
+                        <th className="text-center px-2 py-3 font-headline uppercase text-xs tracking-wide text-white/70 hidden md:table-cell">BB</th>
+                        <th className="text-center px-2 py-3 font-headline uppercase text-xs tracking-wide text-white/70 hidden md:table-cell">SO</th>
+                        <th className="text-center px-2 py-3 font-headline uppercase text-xs tracking-wide text-white/70 hidden lg:table-cell">SB</th>
+                        <th className="text-center px-2 py-3 font-headline uppercase text-xs tracking-wide text-white/70">AVG</th>
+                        <th className="text-center px-2 py-3 font-headline uppercase text-xs tracking-wide text-white/70 hidden lg:table-cell">OBP</th>
+                        <th className="text-center px-2 py-3 font-headline uppercase text-xs tracking-wide text-white/70 hidden lg:table-cell">SLG</th>
+                        <th className="text-center px-2 py-3 font-headline uppercase text-xs tracking-wide text-white/70 hidden xl:table-cell">OPS</th>
                       </tr>
                     </thead>
                     <tbody>
                       <tr>
-                        <td className="font-medium">2026</td>
-                        <td className="stat-col">{battingStats.gamesPlayed}</td>
-                        <td className="stat-col">{battingStats.atBats}</td>
-                        <td className="stat-col">{battingStats.runs}</td>
-                        <td className="stat-col">{battingStats.hits}</td>
-                        <td className="stat-col hidden sm:table-cell">{battingStats.doubles}</td>
-                        <td className="stat-col hidden sm:table-cell">{battingStats.triples}</td>
-                        <td className="stat-col">
-                          {battingStats.homeRuns > 0 ? (
-                            <span className="highlight-stat">{battingStats.homeRuns}</span>
-                          ) : (
-                            "0"
-                          )}
-                        </td>
-                        <td className="stat-col">{battingStats.rbi}</td>
-                        <td className="stat-col hidden md:table-cell">{battingStats.walks}</td>
-                        <td className="stat-col hidden md:table-cell">{battingStats.strikeouts}</td>
-                        <td className="stat-col hidden lg:table-cell">{battingStats.stolenBases}</td>
-                        <td className="stat-col font-medium">
+                        <td className="px-4 py-3 font-medium text-white">2026</td>
+                        <td className="text-center px-2 py-3 text-white/70">{battingStats.gamesPlayed}</td>
+                        <td className="text-center px-2 py-3 text-white/70">{battingStats.atBats}</td>
+                        <td className="text-center px-2 py-3 text-white/70">{battingStats.runs}</td>
+                        <td className="text-center px-2 py-3 text-white/70">{battingStats.hits}</td>
+                        <td className="text-center px-2 py-3 text-white/70 hidden sm:table-cell">{battingStats.doubles}</td>
+                        <td className="text-center px-2 py-3 text-white/70 hidden sm:table-cell">{battingStats.triples}</td>
+                        <td className="text-center px-2 py-3 text-white/70">{battingStats.homeRuns}</td>
+                        <td className="text-center px-2 py-3 text-white/70">{battingStats.rbi}</td>
+                        <td className="text-center px-2 py-3 text-white/70 hidden md:table-cell">{battingStats.walks}</td>
+                        <td className="text-center px-2 py-3 text-white/70 hidden md:table-cell">{battingStats.strikeouts}</td>
+                        <td className="text-center px-2 py-3 text-white/70 hidden lg:table-cell">{battingStats.stolenBases}</td>
+                        <td className="text-center px-2 py-3 font-medium text-white">
                           {battingStats.atBats > 0 ? formatAvg(battingStats.avg) : "-"}
                         </td>
-                        <td className="stat-col hidden lg:table-cell">
+                        <td className="text-center px-2 py-3 text-white/70 hidden lg:table-cell">
                           {battingStats.atBats > 0 ? formatAvg(battingStats.obp) : "-"}
                         </td>
-                        <td className="stat-col hidden lg:table-cell">
+                        <td className="text-center px-2 py-3 text-white/70 hidden lg:table-cell">
                           {battingStats.atBats > 0 ? formatAvg(battingStats.slg) : "-"}
                         </td>
-                        <td className="stat-col hidden xl:table-cell">
+                        <td className="text-center px-2 py-3 text-white/70 hidden xl:table-cell">
                           {battingStats.atBats > 0 ? formatAvg(battingStats.ops) : "-"}
                         </td>
                       </tr>
@@ -203,43 +197,43 @@ export default async function PlayerDetailPage({ params, searchParams }: PagePro
 
               {/* Batting Average Progression Chart */}
               {chartData.length >= 3 && (
-                <div className="bg-dark">
+                <div>
                   <PlayerProgressChart data={chartData} playerName={player.name} />
                 </div>
               )}
 
               {/* Pitching Stats */}
               {hasPitchingStats && (
-                <div className="bg-white border border-dark/10 overflow-hidden">
-                  <div className="px-4 py-3 border-b border-dark/10">
-                    <h3 className="font-headline text-lg uppercase tracking-tight text-dark">Pitching</h3>
+                <div className="bg-white/5 border border-white/10 overflow-hidden">
+                  <div className="px-4 py-3 border-b border-white/10">
+                    <h3 className="font-headline text-lg uppercase tracking-tight text-white">Pitching</h3>
                   </div>
                   <div className="overflow-x-auto">
-                    <table className="stats-table">
-                      <thead className="bg-dark text-white">
+                    <table className="w-full text-sm">
+                      <thead className="bg-white/10">
                         <tr>
-                          <th className="!text-white !border-b-0 text-left">Season</th>
-                          <th className="!text-white !border-b-0 stat-col">G</th>
-                          <th className="!text-white !border-b-0 stat-col">IP</th>
-                          <th className="!text-white !border-b-0 stat-col">H</th>
-                          <th className="!text-white !border-b-0 stat-col">ER</th>
-                          <th className="!text-white !border-b-0 stat-col">BB</th>
-                          <th className="!text-white !border-b-0 stat-col">K</th>
-                          <th className="!text-white !border-b-0 stat-col">ERA</th>
-                          <th className="!text-white !border-b-0 stat-col">WHIP</th>
+                          <th className="text-left px-4 py-3 font-headline uppercase text-xs tracking-wide text-white/70">Season</th>
+                          <th className="text-center px-2 py-3 font-headline uppercase text-xs tracking-wide text-white/70">G</th>
+                          <th className="text-center px-2 py-3 font-headline uppercase text-xs tracking-wide text-white/70">IP</th>
+                          <th className="text-center px-2 py-3 font-headline uppercase text-xs tracking-wide text-white/70">H</th>
+                          <th className="text-center px-2 py-3 font-headline uppercase text-xs tracking-wide text-white/70">ER</th>
+                          <th className="text-center px-2 py-3 font-headline uppercase text-xs tracking-wide text-white/70">BB</th>
+                          <th className="text-center px-2 py-3 font-headline uppercase text-xs tracking-wide text-white/70">K</th>
+                          <th className="text-center px-2 py-3 font-headline uppercase text-xs tracking-wide text-white/70">ERA</th>
+                          <th className="text-center px-2 py-3 font-headline uppercase text-xs tracking-wide text-white/70">WHIP</th>
                         </tr>
                       </thead>
                       <tbody>
                         <tr>
-                          <td className="font-medium">2026</td>
-                          <td className="stat-col">{pitchingStats.gamesPlayed}</td>
-                          <td className="stat-col">{pitchingStats.inningsPitched.toFixed(1)}</td>
-                          <td className="stat-col">{pitchingStats.hitsAllowed}</td>
-                          <td className="stat-col">{pitchingStats.earnedRuns}</td>
-                          <td className="stat-col">{pitchingStats.walksAllowed}</td>
-                          <td className="stat-col">{pitchingStats.strikeouts}</td>
-                          <td className="stat-col font-medium">{formatEra(pitchingStats.era)}</td>
-                          <td className="stat-col">{pitchingStats.whip.toFixed(2)}</td>
+                          <td className="px-4 py-3 font-medium text-white">2026</td>
+                          <td className="text-center px-2 py-3 text-white/70">{pitchingStats.gamesPlayed}</td>
+                          <td className="text-center px-2 py-3 text-white/70">{pitchingStats.inningsPitched.toFixed(1)}</td>
+                          <td className="text-center px-2 py-3 text-white/70">{pitchingStats.hitsAllowed}</td>
+                          <td className="text-center px-2 py-3 text-white/70">{pitchingStats.earnedRuns}</td>
+                          <td className="text-center px-2 py-3 text-white/70">{pitchingStats.walksAllowed}</td>
+                          <td className="text-center px-2 py-3 text-white/70">{pitchingStats.strikeouts}</td>
+                          <td className="text-center px-2 py-3 font-medium text-white">{formatEra(pitchingStats.era)}</td>
+                          <td className="text-center px-2 py-3 text-white/70">{pitchingStats.whip.toFixed(2)}</td>
                         </tr>
                       </tbody>
                     </table>
@@ -248,55 +242,49 @@ export default async function PlayerDetailPage({ params, searchParams }: PagePro
               )}
 
               {/* Game Log */}
-              <div className="bg-white border border-dark/10 overflow-hidden">
-                <div className="px-4 py-3 border-b border-dark/10">
-                  <h3 className="font-headline text-lg uppercase tracking-tight text-dark">Game Log</h3>
+              <div className="bg-white/5 border border-white/10 overflow-hidden">
+                <div className="px-4 py-3 border-b border-white/10">
+                  <h3 className="font-headline text-lg uppercase tracking-tight text-white">Game Log</h3>
                 </div>
                 <div className="overflow-x-auto">
-                  <table className="stats-table">
-                    <thead className="bg-dark/5">
+                  <table className="w-full text-sm">
+                    <thead className="bg-white/10">
                       <tr>
-                        <th className="text-left">Date</th>
-                        <th className="text-left">Opponent</th>
-                        <th className="stat-col">AB</th>
-                        <th className="stat-col">H</th>
-                        <th className="stat-col">R</th>
-                        <th className="stat-col">RBI</th>
-                        <th className="stat-col hidden sm:table-cell">HR</th>
-                        <th className="stat-col hidden sm:table-cell">BB</th>
+                        <th className="text-left px-4 py-3 font-headline uppercase text-xs tracking-wide text-white/70">Date</th>
+                        <th className="text-left px-4 py-3 font-headline uppercase text-xs tracking-wide text-white/70">Opponent</th>
+                        <th className="text-center px-2 py-3 font-headline uppercase text-xs tracking-wide text-white/70">AB</th>
+                        <th className="text-center px-2 py-3 font-headline uppercase text-xs tracking-wide text-white/70">H</th>
+                        <th className="text-center px-2 py-3 font-headline uppercase text-xs tracking-wide text-white/70">R</th>
+                        <th className="text-center px-2 py-3 font-headline uppercase text-xs tracking-wide text-white/70">RBI</th>
+                        <th className="text-center px-2 py-3 font-headline uppercase text-xs tracking-wide text-white/70 hidden sm:table-cell">HR</th>
+                        <th className="text-center px-2 py-3 font-headline uppercase text-xs tracking-wide text-white/70 hidden sm:table-cell">BB</th>
                       </tr>
                     </thead>
-                    <tbody>
+                    <tbody className="divide-y divide-white/5">
                       {gamesWithStats.map((game, index) => {
                         const stat = game.playerStat!;
                         return (
-                          <tr key={index} className={index % 2 === 1 ? "bg-dark/[0.02]" : ""}>
-                            <td className="whitespace-nowrap">
+                          <tr key={index} className="hover:bg-white/5 transition-colors">
+                            <td className="px-4 py-3 whitespace-nowrap text-white">
                               {new Date(game.date).toLocaleDateString("en-US", {
                                 month: "short",
                                 day: "numeric",
                               })}
                             </td>
-                            <td>
+                            <td className="px-4 py-3">
                               <Link
                                 href={`/schedule/${game.slug}`}
-                                className="hover:text-orange transition-colors"
+                                className="text-white hover:text-teal transition-colors"
                               >
                                 {game.opponent}
                               </Link>
                             </td>
-                            <td className="stat-col">{stat.atBats || 0}</td>
-                            <td className="stat-col">{stat.hits || 0}</td>
-                            <td className="stat-col">{stat.runs || 0}</td>
-                            <td className="stat-col">{stat.rbi || 0}</td>
-                            <td className="stat-col hidden sm:table-cell">
-                              {stat.homeRuns ? (
-                                <span className="highlight-stat">{stat.homeRuns}</span>
-                              ) : (
-                                "0"
-                              )}
-                            </td>
-                            <td className="stat-col hidden sm:table-cell">{stat.walks || 0}</td>
+                            <td className="text-center px-2 py-3 text-white/70">{stat.atBats || 0}</td>
+                            <td className="text-center px-2 py-3 text-white/70">{stat.hits || 0}</td>
+                            <td className="text-center px-2 py-3 text-white/70">{stat.runs || 0}</td>
+                            <td className="text-center px-2 py-3 text-white/70">{stat.rbi || 0}</td>
+                            <td className="text-center px-2 py-3 text-white/70 hidden sm:table-cell">{stat.homeRuns || 0}</td>
+                            <td className="text-center px-2 py-3 text-white/70 hidden sm:table-cell">{stat.walks || 0}</td>
                           </tr>
                         );
                       })}

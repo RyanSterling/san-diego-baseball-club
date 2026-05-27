@@ -255,8 +255,8 @@ export default async function HomePage({ searchParams }: PageProps) {
                   {/* Left Content */}
                   <div className="flex-1 p-6 flex flex-col z-10">
                     {/* Jersey Number Box */}
-                    <div className="w-14 h-14 border-2 border-white/80 flex items-center justify-center">
-                      <span className="font-headline text-2xl text-white">{player.jerseyNumber}</span>
+                    <div className="w-10 h-10 border-2 border-white/80 flex items-center justify-center">
+                      <span className="font-headline text-lg text-white">{player.jerseyNumber}</span>
                     </div>
 
                     {/* Name & Position */}
@@ -288,7 +288,7 @@ export default async function HomePage({ searchParams }: PageProps) {
 
                   {/* Orange Circle Background - only show for players with photos */}
                   {player.photo && (
-                    <div className="absolute -right-32 top-1/2 -translate-y-1/2 w-[28rem] h-[28rem] bg-orange rounded-full" />
+                    <div className="absolute -right-48 top-1/2 -translate-y-1/2 w-[28rem] h-[28rem] bg-orange rounded-full" />
                   )}
 
                   {/* Player Photo or Placeholder Icon */}
