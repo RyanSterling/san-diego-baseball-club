@@ -235,7 +235,7 @@ export default async function HomePage({ searchParams }: PageProps) {
             </Link>
           </div>
 
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {rosterWithStats
               .sort((a, b) => {
                 // Sort by AVG descending for players with at-bats, then by jersey number
@@ -250,38 +250,62 @@ export default async function HomePage({ searchParams }: PageProps) {
                 <Link
                   key={player._id}
                   href={`/roster/${player.slug}`}
-                  className="group bg-white/5 border border-white/10 p-6 text-center hover:border-teal transition-colors"
+                  className="group relative flex bg-[#2d2d2d] overflow-hidden hover:bg-[#333] transition-colors h-48"
                 >
-                  {/* Jersey Number */}
-                  <div className="flex justify-end mb-2">
-                    <span className="font-headline text-2xl text-white">#{player.jerseyNumber}</span>
+                  {/* Left Content */}
+                  <div className="flex-1 p-6 flex flex-col justify-between z-10">
+                    {/* Jersey Number Box */}
+                    <div className="w-12 h-12 border-2 border-white/80 flex items-center justify-center">
+                      <span className="font-headline text-xl text-white">{player.jerseyNumber}</span>
+                    </div>
+
+                    {/* Name & Position */}
+                    <div>
+                      <h3 className="font-headline text-2xl uppercase tracking-tight text-white group-hover:text-teal transition-colors">
+                        {player.name}
+                      </h3>
+                      <p className="text-white/50 mt-1">{player.position}</p>
+                    </div>
+
+                    {/* Stats */}
+                    {player.batting && player.batting.atBats > 0 && (
+                      <div className="flex gap-6 mt-2">
+                        <div>
+                          <p className="text-white/50 text-xs uppercase tracking-wide">AVG</p>
+                          <p className="font-headline text-lg text-white">{player.batting.avg.toFixed(3).replace(/^0/, '')}</p>
+                        </div>
+                        <div>
+                          <p className="text-white/50 text-xs uppercase tracking-wide">SLG</p>
+                          <p className="font-headline text-lg text-white">{player.batting.slg.toFixed(3).replace(/^0/, '')}</p>
+                        </div>
+                        <div>
+                          <p className="text-white/50 text-xs uppercase tracking-wide">OPS</p>
+                          <p className="font-headline text-lg text-white">{player.batting.ops.toFixed(3).replace(/^0/, '')}</p>
+                        </div>
+                      </div>
+                    )}
                   </div>
 
-                  {/* Circular Photo */}
-                  <div className="w-28 h-28 mx-auto rounded-full bg-white/10 overflow-hidden relative">
+                  {/* Orange Circle Background */}
+                  <div className="absolute right-0 top-1/2 -translate-y-1/2 w-48 h-48 bg-orange rounded-full translate-x-12" />
+
+                  {/* Player Photo */}
+                  <div className="absolute right-4 top-1/2 -translate-y-1/2 w-36 h-36 rounded-full overflow-hidden z-10">
                     {player.photo ? (
                       <Image
-                        src={urlFor(player.photo).width(224).height(224).url()}
+                        src={urlFor(player.photo).width(288).height(288).url()}
                         alt={player.name}
                         fill
                         className="object-cover"
                       />
                     ) : (
-                      <div className="absolute inset-0 flex items-center justify-center text-white/40">
-                        <svg className="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <div className="absolute inset-0 flex items-center justify-center bg-white/10 text-white/40">
+                        <svg className="w-16 h-16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                         </svg>
                       </div>
                     )}
                   </div>
-
-                  {/* Name */}
-                  <h3 className="font-headline text-xl uppercase tracking-tight text-white mt-4 group-hover:text-teal transition-colors">
-                    {player.name}
-                  </h3>
-
-                  {/* Position */}
-                  <p className="text-white/50 mt-1">{player.position}</p>
                 </Link>
               ))}
           </div>
