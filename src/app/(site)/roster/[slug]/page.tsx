@@ -72,59 +72,77 @@ export default async function PlayerDetailPage({ params, searchParams }: PagePro
 
   return (
     <div>
-      {/* Hero Section */}
-      <section className="bg-dark text-white">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      {/* Back Link */}
+      <div className="bg-dark">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
           <Link
             href="/#roster"
-            className="inline-flex items-center text-white/60 hover:text-teal transition-colors text-sm mb-6"
+            className="inline-flex items-center text-white/60 hover:text-teal transition-colors text-sm"
           >
             <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
             </svg>
             Back to Roster
           </Link>
+        </div>
+      </div>
 
-          <div className="flex flex-col sm:flex-row gap-6 items-start">
-            {/* Player Photo */}
-            <div className="w-32 h-32 sm:w-40 sm:h-40 bg-dark/50 border-2 border-teal flex-shrink-0 relative overflow-hidden">
-              {player.photo ? (
-                <Image
-                  src={urlFor(player.photo).width(320).height(320).url()}
-                  alt={player.name}
-                  fill
-                  className="object-cover"
-                />
-              ) : (
-                <div className="absolute inset-0 flex items-center justify-center text-white/20">
-                  <span className="font-headline text-5xl">#{player.jerseyNumber}</span>
-                </div>
-              )}
-            </div>
-
-            {/* Player Info */}
-            <div className="flex-1">
-              <h1 className="font-headline text-3xl sm:text-4xl uppercase tracking-tight">
-                {player.name}{" "}
-                <span className="text-teal">#{player.jerseyNumber}</span>
-              </h1>
-
-              {/* Info Bar */}
-              <div className="flex flex-wrap items-center gap-x-3 gap-y-1 mt-3 text-white/70">
-                <span className="font-headline text-lg uppercase text-teal">{player.position}</span>
-                {btDisplay && (
-                  <>
-                    <span className="text-white/30">|</span>
-                    <span>B/T: {btDisplay}</span>
-                  </>
-                )}
+      {/* Hero Section - Card Style */}
+      <section className="bg-dark text-white">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+          <div className="relative flex bg-[#2d2d2d] overflow-hidden h-44">
+            {/* Left Content */}
+            <div className="flex-1 p-6 flex flex-col z-10">
+              {/* Jersey Number Box */}
+              <div className="w-10 h-10 border-2 border-white/80 flex items-center justify-center">
+                <span className="font-headline text-lg text-white">{player.jerseyNumber}</span>
               </div>
 
-              {player.bio && (
-                <p className="mt-4 text-white/60 text-sm max-w-xl">{player.bio}</p>
-              )}
+              {/* Name & Position */}
+              <div className="mt-4">
+                <h1 className="font-headline text-2xl sm:text-3xl uppercase tracking-tight text-white">
+                  {player.name}
+                </h1>
+                <div className="flex items-center gap-3 mt-1">
+                  <span className="text-white/50">{player.position}</span>
+                  {btDisplay && (
+                    <>
+                      <span className="text-white/30">|</span>
+                      <span className="text-white/50">B/T: {btDisplay}</span>
+                    </>
+                  )}
+                </div>
+              </div>
             </div>
+
+            {/* Orange Circle Background - only show for players with photos */}
+            {player.photo && (
+              <div className="absolute -right-32 top-1/2 -translate-y-1/2 w-80 h-80 bg-orange rounded-full" />
+            )}
+
+            {/* Player Photo or Placeholder */}
+            {player.photo ? (
+              <div className="absolute right-0 top-0 bottom-0 w-44 z-10">
+                <Image
+                  src={urlFor(player.photo).width(352).height(352).url()}
+                  alt={player.name}
+                  fill
+                  className="object-cover object-top"
+                />
+              </div>
+            ) : (
+              <div className="absolute right-8 top-1/2 -translate-y-1/2 z-10">
+                <svg className="w-20 h-20 text-white/15" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                </svg>
+              </div>
+            )}
           </div>
+
+          {/* Bio - outside the card */}
+          {player.bio && (
+            <p className="mt-4 text-white/60 text-sm max-w-xl">{player.bio}</p>
+          )}
         </div>
       </section>
 
