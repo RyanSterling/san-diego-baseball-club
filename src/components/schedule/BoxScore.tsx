@@ -9,15 +9,17 @@ export default function BoxScore({ game, teamName = "SDBC" }: BoxScoreProps) {
   const {
     opponent,
     homeOrAway,
-    ourInnings = [],
-    theirInnings = [],
     ourScore,
     theirScore,
     ourHits,
     theirHits,
-    ourErrors = 0,
-    theirErrors = 0,
   } = game;
+
+  // Handle null/undefined arrays
+  const ourInnings = game.ourInnings ?? [];
+  const theirInnings = game.theirInnings ?? [];
+  const ourErrors = game.ourErrors ?? 0;
+  const theirErrors = game.theirErrors ?? 0;
 
   // Determine max innings (at least 7 for display, or actual innings played)
   const maxInnings = Math.max(7, ourInnings.length, theirInnings.length);

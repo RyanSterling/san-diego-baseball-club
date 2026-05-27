@@ -15,7 +15,9 @@
       "Bash(lsof:*)",
       "Bash(find:*)",
       "Bash(git init:*)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(git commit -m \"$\\(cat <<''EOF''\nInitial commit: San Diego Baseball Club website\n\nFull-stack Next.js application with:\n- Public site with schedule, roster, stats, and practice pages\n- Custom admin dashboard for managing games, players, seasons, practices, and team fund\n- Sanity CMS integration for content management\n- AI-powered stats entry from game photos\n- Dark theme with custom fonts and brand colors\n\nCo-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>\nEOF\n\\)\")",
+      "Bash(git push:*)"
     ],
     "additionalDirectories": [
       "/Users/ryansterling/Desktop/Code Projects/San Diego Baseball Club"
