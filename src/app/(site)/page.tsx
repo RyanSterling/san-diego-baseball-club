@@ -250,17 +250,17 @@ export default async function HomePage({ searchParams }: PageProps) {
                 <Link
                   key={player._id}
                   href={`/roster/${player.slug}`}
-                  className="group relative flex bg-[#2d2d2d] overflow-hidden hover:bg-[#333] transition-colors h-48"
+                  className="group relative flex bg-[#2d2d2d] overflow-hidden hover:bg-[#333] transition-colors h-64"
                 >
                   {/* Left Content */}
-                  <div className="flex-1 p-6 flex flex-col justify-between z-10">
+                  <div className="flex-1 p-6 flex flex-col z-10">
                     {/* Jersey Number Box */}
-                    <div className="w-12 h-12 border-2 border-white/80 flex items-center justify-center">
-                      <span className="font-headline text-xl text-white">{player.jerseyNumber}</span>
+                    <div className="w-14 h-14 border-2 border-white/80 flex items-center justify-center">
+                      <span className="font-headline text-2xl text-white">{player.jerseyNumber}</span>
                     </div>
 
                     {/* Name & Position */}
-                    <div>
+                    <div className="mt-6">
                       <h3 className="font-headline text-2xl uppercase tracking-tight text-white group-hover:text-teal transition-colors">
                         {player.name}
                       </h3>
@@ -269,18 +269,18 @@ export default async function HomePage({ searchParams }: PageProps) {
 
                     {/* Stats */}
                     {player.batting && player.batting.atBats > 0 && (
-                      <div className="flex gap-6 mt-2">
+                      <div className="flex gap-8 mt-auto">
                         <div>
                           <p className="text-white/50 text-xs uppercase tracking-wide">AVG</p>
-                          <p className="font-headline text-lg text-white">{player.batting.avg.toFixed(3).replace(/^0/, '')}</p>
+                          <p className="font-headline text-xl text-white">{player.batting.avg.toFixed(3).replace(/^0/, '')}</p>
                         </div>
                         <div>
                           <p className="text-white/50 text-xs uppercase tracking-wide">SLG</p>
-                          <p className="font-headline text-lg text-white">{player.batting.slg.toFixed(3).replace(/^0/, '')}</p>
+                          <p className="font-headline text-xl text-white">{player.batting.slg.toFixed(3).replace(/^0/, '')}</p>
                         </div>
                         <div>
                           <p className="text-white/50 text-xs uppercase tracking-wide">OPS</p>
-                          <p className="font-headline text-lg text-white">{player.batting.ops.toFixed(3).replace(/^0/, '')}</p>
+                          <p className="font-headline text-xl text-white">{player.batting.ops.toFixed(3).replace(/^0/, '')}</p>
                         </div>
                       </div>
                     )}
@@ -288,14 +288,14 @@ export default async function HomePage({ searchParams }: PageProps) {
 
                   {/* Orange Circle Background - only show for players with photos */}
                   {player.photo && (
-                    <div className="absolute -right-40 top-1/2 -translate-y-1/2 w-96 h-96 bg-orange rounded-full" />
+                    <div className="absolute -right-32 top-1/2 -translate-y-1/2 w-[28rem] h-[28rem] bg-orange rounded-full" />
                   )}
 
                   {/* Player Photo or Placeholder Icon */}
                   {player.photo ? (
-                    <div className="absolute right-0 top-0 bottom-0 w-44 z-10">
+                    <div className="absolute right-0 top-0 bottom-0 w-56 z-10">
                       <Image
-                        src={urlFor(player.photo).width(352).height(384).url()}
+                        src={urlFor(player.photo).width(448).height(512).url()}
                         alt={player.name}
                         fill
                         className="object-cover object-top"
@@ -303,7 +303,7 @@ export default async function HomePage({ searchParams }: PageProps) {
                     </div>
                   ) : (
                     <div className="absolute right-8 top-1/2 -translate-y-1/2 z-10">
-                      <svg className="w-24 h-24 text-white/15" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <svg className="w-28 h-28 text-white/15" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                       </svg>
                     </div>
