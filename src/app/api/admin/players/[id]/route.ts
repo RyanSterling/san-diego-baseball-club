@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { writeClient } from "@/lib/sanity/writeClient";
 import { getAuthCookie, verifyAuthToken } from "@/lib/auth";
-import { updateDocument, deleteDocument, createReference } from "@/lib/sanity/mutations";
+import { updateDocument, createReference } from "@/lib/sanity/mutations";
 import groq from "groq";
 
 const playerDetailQuery = groq`
@@ -111,7 +111,40 @@ export async function DELETE(
   const { id } = await params;
 
   try {
-    await deleteDocument(id);
+    // Find all games that reference this player in their playerStats
+    const gamesWithPlayer = await writeClient.fetch<Array<{ _id: string; playerStats: Array<{ _key: string; player: { _ref: string } }> }>>(
+      groq`*[_type == "game" && references($playerId)] {
+        _id,
+        playerStats[] {
+          _key,
+          player
+        }
+      }`,
+      { playerId: id }
+    );
+
+    // Remove player stats references from all games
+    if (gamesWithPlayer.length > 0) {
+      const transaction = writeClient.transaction();
+
+      for (const game of gamesWithPlayer) {
+        const keysToRemove = game.playerStats
+          ?.filter(stat => stat.player?._ref === id)
+          .map(stat => stat._key) || [];
+
+        for (const key of keysToRemove) {
+          transaction.patch(game._id, patch =>
+            patch.unset([`playerStats[_key=="${key}"]`])
+          );
+        }
+      }
+
+      await transaction.commit();
+    }
+
+    // Now delete the player
+    await writeClient.delete(id);
+
     return NextResponse.json({ success: true });
   } catch (error) {
     console.error("Delete player error:", error);
