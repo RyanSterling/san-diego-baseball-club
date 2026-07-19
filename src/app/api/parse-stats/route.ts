@@ -3,6 +3,9 @@ import Anthropic from "@anthropic-ai/sdk";
 import { client } from "@/lib/sanity/client";
 import { activePlayersQuery } from "@/lib/sanity/queries";
 
+// Extend Netlify function timeout (max 60s on Pro plan)
+export const maxDuration = 60;
+
 interface Player {
   _id: string;
   name: string;
@@ -63,7 +66,7 @@ export async function POST(request: Request) {
     });
 
     const response = await anthropic.messages.create({
-      model: "claude-sonnet-4-5",
+      model: "claude-3-5-haiku-20241022",
       max_tokens: 4096,
       messages: [
         {
@@ -141,12 +144,12 @@ Return a JSON object with this exact structure:
 }
 
 CRITICAL:
+- ONLY include players that match someone on the roster above - SKIP any players not on the roster
 - "hits" should equal singles + doubles + triples + homeRuns
 - Read columns carefully - PA and AB are DIFFERENT columns
 - The 1B column contains SINGLES only, not total hits
 - Use 0 for batting stats if not visible, null for pitching stats
 - Only include pitching stats if the player actually pitched
-- Match player names to the roster IDs when possible
 Return ONLY valid JSON, no other text.`,
             },
           ],
