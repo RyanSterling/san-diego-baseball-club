@@ -103,9 +103,9 @@ export async function POST(request: Request) {
     const sanityPlayerStats = playerStats.map((stat) => {
       const existing = existingStatsMap.get(stat.playerId);
 
-      // Helper: use incoming value if non-zero, otherwise keep existing
-      const mergeValue = (incoming: number, existingVal?: number) => {
-        if (incoming > 0) return incoming;
+      // Always use incoming value - only fall back to existing if incoming is undefined
+      const mergeValue = (incoming: number | undefined, existingVal?: number) => {
+        if (incoming !== undefined) return incoming;
         return existingVal ?? 0;
       };
 
