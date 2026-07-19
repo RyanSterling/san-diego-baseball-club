@@ -187,6 +187,7 @@ export interface SeasonWithFund {
 // Calculated stats
 export interface BattingStats {
   gamesPlayed: number;
+  plateAppearances: number;
   atBats: number;
   hits: number;
   runs: number;

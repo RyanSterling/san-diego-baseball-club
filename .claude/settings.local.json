@@ -21,7 +21,9 @@
       "Bash(git commit -m \"$\\(cat <<''EOF''\nFix BoxScore null handling and dark theme titles\n\n- Fix BoxScore crash when ourInnings/theirInnings are null\n- Add dark prop to TwoToneTitle for dark backgrounds\n- Update game detail page with dark title variants\n- Clean up stat highlighting colors\n\nCo-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>\nEOF\n\\)\")",
       "Bash(git commit -m \"$\\(cat <<''EOF''\nUpdate player card placeholder and footer styling\n\n- Change roster placeholder circle from teal to subtle dark \\(bg-white/10\\)\n- Remove teal border from footer top\n\nCo-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>\nEOF\n\\)\")",
       "Bash(git commit -m \"$\\(cat <<''EOF''\nRedesign roster cards with horizontal layout\n\n- New card design with orange circle accent\n- Jersey number in bordered box\n- Stats \\(AVG, SLG, OPS\\) displayed on card\n- Photo overlapping orange accent circle\n- 2-column responsive grid\n\nCo-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>\nEOF\n\\)\")",
-      "Bash(git commit:*)"
+      "Bash(git commit:*)",
+      "Bash(npx sanity documents query:*)",
+      "WebFetch(domain:docs.anthropic.com)"
     ],
     "additionalDirectories": [
       "/Users/ryansterling/Desktop/Code Projects/San Diego Baseball Club"

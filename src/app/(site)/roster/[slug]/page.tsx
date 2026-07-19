@@ -165,7 +165,7 @@ export default async function PlayerDetailPage({ params, searchParams }: PagePro
                       <tr>
                         <th className="text-left px-4 py-3 font-headline uppercase text-xs tracking-wide text-white/70">Season</th>
                         <th className="text-center px-2 py-3 font-headline uppercase text-xs tracking-wide text-white/70">G</th>
-                        <th className="text-center px-2 py-3 font-headline uppercase text-xs tracking-wide text-white/70">AB</th>
+                        <th className="text-center px-2 py-3 font-headline uppercase text-xs tracking-wide text-white/70">PA</th>
                         <th className="text-center px-2 py-3 font-headline uppercase text-xs tracking-wide text-white/70">R</th>
                         <th className="text-center px-2 py-3 font-headline uppercase text-xs tracking-wide text-white/70">H</th>
                         <th className="text-center px-2 py-3 font-headline uppercase text-xs tracking-wide text-white/70 hidden sm:table-cell">2B</th>
@@ -185,7 +185,7 @@ export default async function PlayerDetailPage({ params, searchParams }: PagePro
                       <tr>
                         <td className="px-4 py-3 font-medium text-white">2026</td>
                         <td className="text-center px-2 py-3 text-white/70">{battingStats.gamesPlayed}</td>
-                        <td className="text-center px-2 py-3 text-white/70">{battingStats.atBats}</td>
+                        <td className="text-center px-2 py-3 text-white/70">{battingStats.plateAppearances}</td>
                         <td className="text-center px-2 py-3 text-white/70">{battingStats.runs}</td>
                         <td className="text-center px-2 py-3 text-white/70">{battingStats.hits}</td>
                         <td className="text-center px-2 py-3 text-white/70 hidden sm:table-cell">{battingStats.doubles}</td>
@@ -270,7 +270,7 @@ export default async function PlayerDetailPage({ params, searchParams }: PagePro
                       <tr>
                         <th className="text-left px-4 py-3 font-headline uppercase text-xs tracking-wide text-white/70">Date</th>
                         <th className="text-left px-4 py-3 font-headline uppercase text-xs tracking-wide text-white/70">Opponent</th>
-                        <th className="text-center px-2 py-3 font-headline uppercase text-xs tracking-wide text-white/70">AB</th>
+                        <th className="text-center px-2 py-3 font-headline uppercase text-xs tracking-wide text-white/70">PA</th>
                         <th className="text-center px-2 py-3 font-headline uppercase text-xs tracking-wide text-white/70">H</th>
                         <th className="text-center px-2 py-3 font-headline uppercase text-xs tracking-wide text-white/70">R</th>
                         <th className="text-center px-2 py-3 font-headline uppercase text-xs tracking-wide text-white/70">RBI</th>
@@ -297,7 +297,7 @@ export default async function PlayerDetailPage({ params, searchParams }: PagePro
                                 {game.opponent}
                               </Link>
                             </td>
-                            <td className="text-center px-2 py-3 text-white/70">{stat.atBats || 0}</td>
+                            <td className="text-center px-2 py-3 text-white/70">{stat.plateAppearances || 0}</td>
                             <td className="text-center px-2 py-3 text-white/70">{stat.hits || 0}</td>
                             <td className="text-center px-2 py-3 text-white/70">{stat.runs || 0}</td>
                             <td className="text-center px-2 py-3 text-white/70">{stat.rbi || 0}</td>

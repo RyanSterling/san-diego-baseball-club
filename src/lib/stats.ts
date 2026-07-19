@@ -9,6 +9,7 @@ interface PlayerInfo {
 }
 
 interface PlayerStatEntry {
+  plateAppearances?: number;
   atBats: number;
   hits: number;
   runs: number;
@@ -19,6 +20,8 @@ interface PlayerStatEntry {
   triples: number;
   homeRuns: number;
   stolenBases: number;
+  hitByPitch?: number;
+  sacrifices?: number;
   inningsPitched?: number;
   earnedRuns?: number;
   pitchingStrikeouts?: number;
@@ -31,6 +34,7 @@ interface PlayerStatEntry {
  */
 interface BattingTotals {
   gamesPlayed: number;
+  plateAppearances: number;
   atBats: number;
   hits: number;
   runs: number;
@@ -45,21 +49,28 @@ interface BattingTotals {
 
 export function calculateBattingStats(statEntries: PlayerStatEntry[]): BattingStats {
   const totals = statEntries.reduce<BattingTotals>(
-    (acc, game) => ({
-      gamesPlayed: acc.gamesPlayed + 1,
-      atBats: acc.atBats + (game.atBats || 0),
-      hits: acc.hits + (game.hits || 0),
-      runs: acc.runs + (game.runs || 0),
-      rbi: acc.rbi + (game.rbi || 0),
-      walks: acc.walks + (game.walks || 0),
-      strikeouts: acc.strikeouts + (game.strikeouts || 0),
-      doubles: acc.doubles + (game.doubles || 0),
-      triples: acc.triples + (game.triples || 0),
-      homeRuns: acc.homeRuns + (game.homeRuns || 0),
-      stolenBases: acc.stolenBases + (game.stolenBases || 0),
-    }),
+    (acc, game) => {
+      // Use stored PA if available, otherwise calculate from components
+      const gamePA = game.plateAppearances ??
+        ((game.atBats || 0) + (game.walks || 0) + (game.hitByPitch || 0) + (game.sacrifices || 0));
+      return {
+        gamesPlayed: acc.gamesPlayed + 1,
+        plateAppearances: acc.plateAppearances + gamePA,
+        atBats: acc.atBats + (game.atBats || 0),
+        hits: acc.hits + (game.hits || 0),
+        runs: acc.runs + (game.runs || 0),
+        rbi: acc.rbi + (game.rbi || 0),
+        walks: acc.walks + (game.walks || 0),
+        strikeouts: acc.strikeouts + (game.strikeouts || 0),
+        doubles: acc.doubles + (game.doubles || 0),
+        triples: acc.triples + (game.triples || 0),
+        homeRuns: acc.homeRuns + (game.homeRuns || 0),
+        stolenBases: acc.stolenBases + (game.stolenBases || 0),
+      };
+    },
     {
       gamesPlayed: 0,
+      plateAppearances: 0,
       atBats: 0,
       hits: 0,
       runs: 0,
@@ -77,10 +88,9 @@ export function calculateBattingStats(statEntries: PlayerStatEntry[]): BattingSt
   const singles = totals.hits - totals.doubles - totals.triples - totals.homeRuns;
   const totalBases =
     singles + totals.doubles * 2 + totals.triples * 3 + totals.homeRuns * 4;
-  const plateAppearances = totals.atBats + totals.walks;
 
   const avg = totals.atBats > 0 ? totals.hits / totals.atBats : 0;
-  const obp = plateAppearances > 0 ? (totals.hits + totals.walks) / plateAppearances : 0;
+  const obp = totals.plateAppearances > 0 ? (totals.hits + totals.walks) / totals.plateAppearances : 0;
   const slg = totals.atBats > 0 ? totalBases / totals.atBats : 0;
   const ops = obp + slg;
 
@@ -202,6 +212,7 @@ export function aggregateStatsFromGames(
       }
 
       playerMap.get(playerId)!.stats.push({
+        plateAppearances: stat.plateAppearances,
         atBats: stat.atBats || 0,
         hits: stat.hits || 0,
         runs: stat.runs || 0,
@@ -212,6 +223,8 @@ export function aggregateStatsFromGames(
         triples: stat.triples || 0,
         homeRuns: stat.homeRuns || 0,
         stolenBases: stat.stolenBases || 0,
+        hitByPitch: stat.hitByPitch,
+        sacrifices: stat.sacrifices,
         inningsPitched: stat.inningsPitched,
         earnedRuns: stat.earnedRuns,
         pitchingStrikeouts: stat.pitchingStrikeouts,

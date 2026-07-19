@@ -26,7 +26,8 @@
     "react-dom": "^19.0.0",
     "recharts": "^3.8.1",
     "resend": "^6.12.3",
-    "sanity": "^5.26.0"
+    "sanity": "^5.26.0",
+    "styled-components": "^6.4.3"
   },
   "devDependencies": {
     "@types/node": "^20",
