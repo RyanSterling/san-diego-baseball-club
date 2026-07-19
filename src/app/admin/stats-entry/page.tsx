@@ -121,6 +121,11 @@ export default function StatsEntryPage() {
       homeRuns: 0,
       stolenBases: 0,
       caughtStealing: 0,
+      inningsPitched: null,
+      earnedRuns: null,
+      pitchingStrikeouts: null,
+      pitchingWalks: null,
+      hitsAllowed: null,
     }));
     setParsedStats(manualStats);
     setGameScore({ ourScore: 0, theirScore: 0 });
@@ -211,6 +216,11 @@ export default function StatsEntryPage() {
         homeRuns: 0,
         stolenBases: 0,
         caughtStealing: 0,
+        inningsPitched: null,
+        earnedRuns: null,
+        pitchingStrikeouts: null,
+        pitchingWalks: null,
+        hitsAllowed: null,
       },
     ]);
   };
@@ -718,6 +728,96 @@ export default function StatsEntryPage() {
                     ))}
                   </tbody>
                 </table>
+              </div>
+            </div>
+
+            {/* Pitching Stats Section */}
+            <div className="mt-6">
+              <h3 className="font-headline text-lg uppercase tracking-tight text-white mb-3">
+                Pitching Stats <span className="text-white/50 text-sm normal-case">(only fill for players who pitched)</span>
+              </h3>
+              <div className="bg-white/5 border border-white/10 rounded-lg overflow-hidden">
+                <div className="overflow-x-auto">
+                  <table className="min-w-full">
+                    <thead className="bg-white/10">
+                      <tr>
+                        <th className="px-3 py-2 text-left text-xs font-headline uppercase tracking-wide text-white/70">Player</th>
+                        <th className="px-3 py-2 text-center text-xs font-headline uppercase tracking-wide text-white/70">IP</th>
+                        <th className="px-3 py-2 text-center text-xs font-headline uppercase tracking-wide text-white/70">H</th>
+                        <th className="px-3 py-2 text-center text-xs font-headline uppercase tracking-wide text-white/70">ER</th>
+                        <th className="px-3 py-2 text-center text-xs font-headline uppercase tracking-wide text-white/70">BB</th>
+                        <th className="px-3 py-2 text-center text-xs font-headline uppercase tracking-wide text-white/70">K</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-white/5">
+                      {parsedStats.filter((s) => s.matchedPlayerId).map((stat, index) => {
+                        const originalIndex = parsedStats.findIndex((p) => p === stat);
+                        const matchedPlayer = roster.find((p) => p._id === stat.matchedPlayerId);
+                        return (
+                          <tr key={index} className="hover:bg-white/5">
+                            <td className="px-3 py-2 whitespace-nowrap">
+                              <span className="text-white">
+                                {matchedPlayer && <span className="text-teal mr-1">#{matchedPlayer.jerseyNumber}</span>}
+                                {matchedPlayer?.name || stat.playerName}
+                              </span>
+                            </td>
+                            <td className="px-3 py-2">
+                              <input
+                                type="number"
+                                step="0.1"
+                                value={stat.inningsPitched ?? ""}
+                                onChange={(e) => handleStatChange(originalIndex, "inningsPitched", e.target.value === "" ? null : parseFloat(e.target.value))}
+                                placeholder="-"
+                                className="w-16 bg-white/5 border border-white/20 text-white text-center px-1 py-1 rounded text-sm placeholder:text-white/30"
+                              />
+                            </td>
+                            <td className="px-3 py-2">
+                              <input
+                                type="number"
+                                value={stat.hitsAllowed ?? ""}
+                                onChange={(e) => handleStatChange(originalIndex, "hitsAllowed", e.target.value === "" ? null : parseInt(e.target.value))}
+                                placeholder="-"
+                                className="w-16 bg-white/5 border border-white/20 text-white text-center px-1 py-1 rounded text-sm placeholder:text-white/30"
+                              />
+                            </td>
+                            <td className="px-3 py-2">
+                              <input
+                                type="number"
+                                value={stat.earnedRuns ?? ""}
+                                onChange={(e) => handleStatChange(originalIndex, "earnedRuns", e.target.value === "" ? null : parseInt(e.target.value))}
+                                placeholder="-"
+                                className="w-16 bg-white/5 border border-white/20 text-white text-center px-1 py-1 rounded text-sm placeholder:text-white/30"
+                              />
+                            </td>
+                            <td className="px-3 py-2">
+                              <input
+                                type="number"
+                                value={stat.pitchingWalks ?? ""}
+                                onChange={(e) => handleStatChange(originalIndex, "pitchingWalks", e.target.value === "" ? null : parseInt(e.target.value))}
+                                placeholder="-"
+                                className="w-16 bg-white/5 border border-white/20 text-white text-center px-1 py-1 rounded text-sm placeholder:text-white/30"
+                              />
+                            </td>
+                            <td className="px-3 py-2">
+                              <input
+                                type="number"
+                                value={stat.pitchingStrikeouts ?? ""}
+                                onChange={(e) => handleStatChange(originalIndex, "pitchingStrikeouts", e.target.value === "" ? null : parseInt(e.target.value))}
+                                placeholder="-"
+                                className="w-16 bg-white/5 border border-white/20 text-white text-center px-1 py-1 rounded text-sm placeholder:text-white/30"
+                              />
+                            </td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                </div>
+                {parsedStats.filter((s) => s.matchedPlayerId).length === 0 && (
+                  <div className="px-4 py-6 text-center text-white/50 text-sm">
+                    Match players above to enter pitching stats
+                  </div>
+                )}
               </div>
             </div>
 
