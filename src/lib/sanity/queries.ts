@@ -222,6 +222,7 @@ export const gameBySlugQuery = groq`
         jerseyNumber,
         position
       },
+      plateAppearances,
       atBats,
       hits,
       runs,

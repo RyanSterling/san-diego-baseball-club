@@ -172,6 +172,7 @@ export default async function GameDetailPage({ params }: PageProps) {
                     <thead>
                       <tr className="bg-white/10">
                         <th className="text-left py-2 px-3 font-headline text-xs uppercase tracking-wide text-white/70">Player</th>
+                        <th className="text-center py-2 px-2 font-headline text-xs uppercase tracking-wide text-white/70">PA</th>
                         <th className="text-center py-2 px-2 font-headline text-xs uppercase tracking-wide text-white/70">AB</th>
                         <th className="text-center py-2 px-2 font-headline text-xs uppercase tracking-wide text-white/70">H</th>
                         <th className="text-center py-2 px-2 font-headline text-xs uppercase tracking-wide text-white/70">R</th>
@@ -193,6 +194,7 @@ export default async function GameDetailPage({ params }: PageProps) {
                               <span className="!text-white group-hover:!text-teal transition-colors">{stat.player.name}</span>
                             </Link>
                           </td>
+                          <td className="text-center py-2 px-2 text-white/70">{stat.plateAppearances || 0}</td>
                           <td className="text-center py-2 px-2 text-white/70">{stat.atBats || 0}</td>
                           <td className="text-center py-2 px-2 text-white/70">{stat.hits || 0}</td>
                           <td className="text-center py-2 px-2 text-white/70">{stat.runs || 0}</td>
