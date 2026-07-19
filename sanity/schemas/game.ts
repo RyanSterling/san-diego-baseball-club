@@ -177,8 +177,20 @@ export default defineType({
             }),
             // Batting stats
             defineField({
+              name: "plateAppearances",
+              title: "PA",
+              type: "number",
+              initialValue: 0,
+            }),
+            defineField({
               name: "atBats",
               title: "AB",
+              type: "number",
+              initialValue: 0,
+            }),
+            defineField({
+              name: "singles",
+              title: "1B",
               type: "number",
               initialValue: 0,
             }),
@@ -186,6 +198,7 @@ export default defineType({
               name: "hits",
               title: "H",
               type: "number",
+              description: "Total hits (1B+2B+3B+HR)",
               initialValue: 0,
             }),
             defineField({
@@ -233,6 +246,24 @@ export default defineType({
             defineField({
               name: "stolenBases",
               title: "SB",
+              type: "number",
+              initialValue: 0,
+            }),
+            defineField({
+              name: "caughtStealing",
+              title: "CS",
+              type: "number",
+              initialValue: 0,
+            }),
+            defineField({
+              name: "hitByPitch",
+              title: "HBP",
+              type: "number",
+              initialValue: 0,
+            }),
+            defineField({
+              name: "sacrifices",
+              title: "SAC",
               type: "number",
               initialValue: 0,
             }),

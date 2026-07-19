@@ -13,16 +13,22 @@ interface ParsedPlayerStat {
   playerName: string;
   jerseyNumber?: number;
   matchedPlayerId?: string;
+  // Batting stats matching stat sheet format
+  plateAppearances: number;
   atBats: number;
-  hits: number;
-  runs: number;
-  rbi: number;
-  walks: number;
-  strikeouts: number;
+  singles: number;
   doubles: number;
   triples: number;
   homeRuns: number;
+  hits: number; // Total hits (1B+2B+3B+HR)
+  runs: number;
+  rbi: number;
+  walks: number;
+  hitByPitch: number;
+  sacrifices: number;
+  strikeouts: number;
   stolenBases: number;
+  caughtStealing: number;
   // Pitching (optional)
   inningsPitched?: number;
   earnedRuns?: number;
@@ -75,32 +81,50 @@ export async function POST(request: Request) {
               type: "text",
               text: `You are a baseball statistics expert. Extract player stats from this stat sheet image.
 
+IMPORTANT: The stat sheet columns are in this EXACT order:
+BO (batting order) | Name | PA | AB | 1B | 2B | 3B | HR | RUNS | RBI | BB | HBP | SAC | SO | SB | CS | AVG | OB | SLG | ERRS
+
+Column definitions:
+- PA = Plate Appearances (NOT the same as AB)
+- AB = At Bats (different from PA - PA includes walks, HBP, sac)
+- 1B = Singles (base hits that are NOT doubles, triples, or home runs)
+- 2B = Doubles
+- 3B = Triples
+- HR = Home Runs
+- RUNS = Runs scored
+- RBI = Runs Batted In
+- BB = Walks
+- HBP = Hit By Pitch
+- SAC = Sacrifices
+- SO = Strikeouts
+- SB = Stolen Bases
+- CS = Caught Stealing
+
 Here are the players on the team roster (try to match names/numbers to these):
 ${playerList}
-
-Extract the following stats for each player you can identify:
-- Player name and jersey number (if visible)
-- AB (at bats), H (hits), R (runs), RBI, BB (walks), K (strikeouts)
-- 2B (doubles), 3B (triples), HR (home runs), SB (stolen bases)
-- If pitching stats are shown: IP (innings pitched), ER (earned runs), K (pitching strikeouts), BB (pitching walks), H (hits allowed)
 
 Return a JSON object with this exact structure:
 {
   "players": [
     {
       "playerName": "Name from stat sheet",
-      "jerseyNumber": 10,
+      "jerseyNumber": null,
       "matchedPlayerId": "player ID from roster if matched, or null",
+      "plateAppearances": 5,
       "atBats": 4,
-      "hits": 2,
-      "runs": 1,
-      "rbi": 2,
-      "walks": 0,
-      "strikeouts": 1,
+      "singles": 2,
       "doubles": 0,
       "triples": 0,
       "homeRuns": 0,
+      "hits": 2,
+      "runs": 1,
+      "rbi": 2,
+      "walks": 1,
+      "hitByPitch": 0,
+      "sacrifices": 0,
+      "strikeouts": 1,
       "stolenBases": 0,
+      "caughtStealing": 0,
       "inningsPitched": null,
       "earnedRuns": null,
       "pitchingStrikeouts": null,
@@ -116,9 +140,13 @@ Return a JSON object with this exact structure:
   "notes": "Any issues or uncertainties"
 }
 
-If a stat is not visible or not applicable, use 0 for batting stats and null for pitching stats.
-Only include pitching stats if the player actually pitched.
-Match player names to the roster IDs when possible.
+CRITICAL:
+- "hits" should equal singles + doubles + triples + homeRuns
+- Read columns carefully - PA and AB are DIFFERENT columns
+- The 1B column contains SINGLES only, not total hits
+- Use 0 for batting stats if not visible, null for pitching stats
+- Only include pitching stats if the player actually pitched
+- Match player names to the roster IDs when possible
 Return ONLY valid JSON, no other text.`,
             },
           ],

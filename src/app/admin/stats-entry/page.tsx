@@ -24,16 +24,21 @@ interface ParsedStat {
   playerName: string;
   jerseyNumber?: number;
   matchedPlayerId?: string | null;
+  plateAppearances: number;
   atBats: number;
+  singles: number;
   hits: number;
   runs: number;
   rbi: number;
   walks: number;
+  hitByPitch: number;
+  sacrifices: number;
   strikeouts: number;
   doubles: number;
   triples: number;
   homeRuns: number;
   stolenBases: number;
+  caughtStealing: number;
   inningsPitched?: number | null;
   earnedRuns?: number | null;
   pitchingStrikeouts?: number | null;
@@ -101,16 +106,21 @@ export default function StatsEntryPage() {
       playerName: player.name,
       jerseyNumber: player.jerseyNumber,
       matchedPlayerId: player._id,
+      plateAppearances: 0,
       atBats: 0,
+      singles: 0,
       hits: 0,
       runs: 0,
       rbi: 0,
       walks: 0,
+      hitByPitch: 0,
+      sacrifices: 0,
       strikeouts: 0,
       doubles: 0,
       triples: 0,
       homeRuns: 0,
       stolenBases: 0,
+      caughtStealing: 0,
     }));
     setParsedStats(manualStats);
     setGameScore({ ourScore: 0, theirScore: 0 });
@@ -186,16 +196,21 @@ export default function StatsEntryPage() {
       {
         playerName: "",
         matchedPlayerId: null,
+        plateAppearances: 0,
         atBats: 0,
+        singles: 0,
         hits: 0,
         runs: 0,
         rbi: 0,
         walks: 0,
+        hitByPitch: 0,
+        sacrifices: 0,
         strikeouts: 0,
         doubles: 0,
         triples: 0,
         homeRuns: 0,
         stolenBases: 0,
+        caughtStealing: 0,
       },
     ]);
   };
@@ -246,16 +261,21 @@ export default function StatsEntryPage() {
           gameId: selectedGameId,
           playerStats: statsToSave.map((s) => ({
             playerId: s.matchedPlayerId,
+            plateAppearances: s.plateAppearances,
             atBats: s.atBats,
+            singles: s.singles,
             hits: s.hits,
             runs: s.runs,
             rbi: s.rbi,
             walks: s.walks,
+            hitByPitch: s.hitByPitch,
+            sacrifices: s.sacrifices,
             strikeouts: s.strikeouts,
             doubles: s.doubles,
             triples: s.triples,
             homeRuns: s.homeRuns,
             stolenBases: s.stolenBases,
+            caughtStealing: s.caughtStealing,
             inningsPitched: s.inningsPitched,
             earnedRuns: s.earnedRuns,
             pitchingStrikeouts: s.pitchingStrikeouts,
@@ -516,16 +536,21 @@ export default function StatsEntryPage() {
                     <tr>
                       <th className="px-3 py-2 text-left text-xs font-headline uppercase tracking-wide text-white/70">Player</th>
                       <th className="px-3 py-2 text-left text-xs font-headline uppercase tracking-wide text-white/70">Match To</th>
+                      <th className="px-2 py-2 text-center text-xs font-headline uppercase tracking-wide text-white/70">PA</th>
                       <th className="px-2 py-2 text-center text-xs font-headline uppercase tracking-wide text-white/70">AB</th>
+                      <th className="px-2 py-2 text-center text-xs font-headline uppercase tracking-wide text-white/70">1B</th>
+                      <th className="px-2 py-2 text-center text-xs font-headline uppercase tracking-wide text-white/70">2B</th>
+                      <th className="px-2 py-2 text-center text-xs font-headline uppercase tracking-wide text-white/70">3B</th>
+                      <th className="px-2 py-2 text-center text-xs font-headline uppercase tracking-wide text-white/70">HR</th>
                       <th className="px-2 py-2 text-center text-xs font-headline uppercase tracking-wide text-white/70">H</th>
                       <th className="px-2 py-2 text-center text-xs font-headline uppercase tracking-wide text-white/70">R</th>
                       <th className="px-2 py-2 text-center text-xs font-headline uppercase tracking-wide text-white/70">RBI</th>
                       <th className="px-2 py-2 text-center text-xs font-headline uppercase tracking-wide text-white/70">BB</th>
+                      <th className="px-2 py-2 text-center text-xs font-headline uppercase tracking-wide text-white/70">HBP</th>
+                      <th className="px-2 py-2 text-center text-xs font-headline uppercase tracking-wide text-white/70">SAC</th>
                       <th className="px-2 py-2 text-center text-xs font-headline uppercase tracking-wide text-white/70">K</th>
-                      <th className="px-2 py-2 text-center text-xs font-headline uppercase tracking-wide text-white/70">2B</th>
-                      <th className="px-2 py-2 text-center text-xs font-headline uppercase tracking-wide text-white/70">3B</th>
-                      <th className="px-2 py-2 text-center text-xs font-headline uppercase tracking-wide text-white/70">HR</th>
                       <th className="px-2 py-2 text-center text-xs font-headline uppercase tracking-wide text-white/70">SB</th>
+                      <th className="px-2 py-2 text-center text-xs font-headline uppercase tracking-wide text-white/70">CS</th>
                       {entryMode === "manual" && (
                         <th className="px-2 py-2 text-center text-xs font-headline uppercase tracking-wide text-white/70"></th>
                       )}
@@ -559,8 +584,48 @@ export default function StatsEntryPage() {
                         <td className="px-2 py-2">
                           <input
                             type="number"
+                            value={stat.plateAppearances}
+                            onChange={(e) => handleStatChange(index, "plateAppearances", parseInt(e.target.value) || 0)}
+                            className="w-12 bg-white/5 border border-white/20 text-white text-center px-1 py-1 rounded text-sm"
+                          />
+                        </td>
+                        <td className="px-2 py-2">
+                          <input
+                            type="number"
                             value={stat.atBats}
                             onChange={(e) => handleStatChange(index, "atBats", parseInt(e.target.value) || 0)}
+                            className="w-12 bg-white/5 border border-white/20 text-white text-center px-1 py-1 rounded text-sm"
+                          />
+                        </td>
+                        <td className="px-2 py-2">
+                          <input
+                            type="number"
+                            value={stat.singles}
+                            onChange={(e) => handleStatChange(index, "singles", parseInt(e.target.value) || 0)}
+                            className="w-12 bg-white/5 border border-white/20 text-white text-center px-1 py-1 rounded text-sm"
+                          />
+                        </td>
+                        <td className="px-2 py-2">
+                          <input
+                            type="number"
+                            value={stat.doubles}
+                            onChange={(e) => handleStatChange(index, "doubles", parseInt(e.target.value) || 0)}
+                            className="w-12 bg-white/5 border border-white/20 text-white text-center px-1 py-1 rounded text-sm"
+                          />
+                        </td>
+                        <td className="px-2 py-2">
+                          <input
+                            type="number"
+                            value={stat.triples}
+                            onChange={(e) => handleStatChange(index, "triples", parseInt(e.target.value) || 0)}
+                            className="w-12 bg-white/5 border border-white/20 text-white text-center px-1 py-1 rounded text-sm"
+                          />
+                        </td>
+                        <td className="px-2 py-2">
+                          <input
+                            type="number"
+                            value={stat.homeRuns}
+                            onChange={(e) => handleStatChange(index, "homeRuns", parseInt(e.target.value) || 0)}
                             className="w-12 bg-white/5 border border-white/20 text-white text-center px-1 py-1 rounded text-sm"
                           />
                         </td>
@@ -599,6 +664,22 @@ export default function StatsEntryPage() {
                         <td className="px-2 py-2">
                           <input
                             type="number"
+                            value={stat.hitByPitch}
+                            onChange={(e) => handleStatChange(index, "hitByPitch", parseInt(e.target.value) || 0)}
+                            className="w-12 bg-white/5 border border-white/20 text-white text-center px-1 py-1 rounded text-sm"
+                          />
+                        </td>
+                        <td className="px-2 py-2">
+                          <input
+                            type="number"
+                            value={stat.sacrifices}
+                            onChange={(e) => handleStatChange(index, "sacrifices", parseInt(e.target.value) || 0)}
+                            className="w-12 bg-white/5 border border-white/20 text-white text-center px-1 py-1 rounded text-sm"
+                          />
+                        </td>
+                        <td className="px-2 py-2">
+                          <input
+                            type="number"
                             value={stat.strikeouts}
                             onChange={(e) => handleStatChange(index, "strikeouts", parseInt(e.target.value) || 0)}
                             className="w-12 bg-white/5 border border-white/20 text-white text-center px-1 py-1 rounded text-sm"
@@ -607,32 +688,16 @@ export default function StatsEntryPage() {
                         <td className="px-2 py-2">
                           <input
                             type="number"
-                            value={stat.doubles}
-                            onChange={(e) => handleStatChange(index, "doubles", parseInt(e.target.value) || 0)}
-                            className="w-12 bg-white/5 border border-white/20 text-white text-center px-1 py-1 rounded text-sm"
-                          />
-                        </td>
-                        <td className="px-2 py-2">
-                          <input
-                            type="number"
-                            value={stat.triples}
-                            onChange={(e) => handleStatChange(index, "triples", parseInt(e.target.value) || 0)}
-                            className="w-12 bg-white/5 border border-white/20 text-white text-center px-1 py-1 rounded text-sm"
-                          />
-                        </td>
-                        <td className="px-2 py-2">
-                          <input
-                            type="number"
-                            value={stat.homeRuns}
-                            onChange={(e) => handleStatChange(index, "homeRuns", parseInt(e.target.value) || 0)}
-                            className="w-12 bg-white/5 border border-white/20 text-white text-center px-1 py-1 rounded text-sm"
-                          />
-                        </td>
-                        <td className="px-2 py-2">
-                          <input
-                            type="number"
                             value={stat.stolenBases}
                             onChange={(e) => handleStatChange(index, "stolenBases", parseInt(e.target.value) || 0)}
+                            className="w-12 bg-white/5 border border-white/20 text-white text-center px-1 py-1 rounded text-sm"
+                          />
+                        </td>
+                        <td className="px-2 py-2">
+                          <input
+                            type="number"
+                            value={stat.caughtStealing}
+                            onChange={(e) => handleStatChange(index, "caughtStealing", parseInt(e.target.value) || 0)}
                             className="w-12 bg-white/5 border border-white/20 text-white text-center px-1 py-1 rounded text-sm"
                           />
                         </td>
