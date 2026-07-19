@@ -305,9 +305,8 @@ export default function StatsEntryPage() {
       if (data.parsedStats?.gameScore) {
         setGameScore(data.parsedStats.gameScore);
       }
-      if (data.roster) {
-        setRoster(data.roster);
-      }
+      // Don't overwrite roster - keep the full roster loaded on mount
+      // so we can add pitchers who didn't bat
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to parse stats");
     } finally {
