@@ -302,6 +302,7 @@ export const playerSeasonGamesQuery = groq`
     date,
     opponent,
     "playerStat": playerStats[player._ref == $playerId][0]{
+      plateAppearances,
       atBats,
       hits,
       runs,
@@ -312,6 +313,8 @@ export const playerSeasonGamesQuery = groq`
       triples,
       homeRuns,
       stolenBases,
+      hitByPitch,
+      sacrifices,
       inningsPitched,
       earnedRuns,
       pitchingStrikeouts,
@@ -329,6 +332,7 @@ export const playerSeasonGamesBySlugQuery = groq`
     date,
     opponent,
     "playerStat": playerStats[player._ref == $playerId][0]{
+      plateAppearances,
       atBats,
       hits,
       runs,
@@ -339,6 +343,8 @@ export const playerSeasonGamesBySlugQuery = groq`
       triples,
       homeRuns,
       stolenBases,
+      hitByPitch,
+      sacrifices,
       inningsPitched,
       earnedRuns,
       pitchingStrikeouts,
