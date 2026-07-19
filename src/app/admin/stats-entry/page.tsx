@@ -351,6 +351,52 @@ export default function StatsEntryPage() {
     setParsedStats((prev) => prev.filter((_, i) => i !== index));
   };
 
+  // Add a pitcher who isn't in the batting stats
+  const handleAddPitcher = (playerId: string) => {
+    const player = roster.find((p) => p._id === playerId);
+    if (!player) return;
+
+    // Check if player is already in stats
+    const existingIndex = parsedStats.findIndex((s) => s.matchedPlayerId === playerId);
+    if (existingIndex >= 0) return; // Already exists
+
+    // Add a new entry with 0 batting stats but matched to player
+    setParsedStats((prev) => [
+      ...prev,
+      {
+        playerName: player.name,
+        jerseyNumber: player.jerseyNumber,
+        matchedPlayerId: player._id,
+        plateAppearances: 0,
+        atBats: 0,
+        singles: 0,
+        hits: 0,
+        runs: 0,
+        rbi: 0,
+        walks: 0,
+        hitByPitch: 0,
+        sacrifices: 0,
+        strikeouts: 0,
+        doubles: 0,
+        triples: 0,
+        homeRuns: 0,
+        stolenBases: 0,
+        caughtStealing: 0,
+        inningsPitched: null,
+        earnedRuns: null,
+        pitchingStrikeouts: null,
+        pitchingWalks: null,
+        hitsAllowed: null,
+      },
+    ]);
+  };
+
+  // Get roster players who aren't already in the stats
+  const getAvailablePitchers = () => {
+    const matchedIds = new Set(parsedStats.map((s) => s.matchedPlayerId).filter(Boolean));
+    return roster.filter((p) => !matchedIds.has(p._id));
+  };
+
   const handleStatChange = (index: number, field: keyof ParsedStat, value: string | number | null) => {
     setParsedStats((prev) => {
       const updated = [...prev];
@@ -894,9 +940,34 @@ export default function StatsEntryPage() {
 
             {/* Pitching Stats Section */}
             <div className="mt-6">
-              <h3 className="font-headline text-lg uppercase tracking-tight text-white mb-3">
-                Pitching Stats <span className="text-white/50 text-sm normal-case">(only fill for players who pitched)</span>
-              </h3>
+              <div className="flex items-center justify-between mb-3">
+                <h3 className="font-headline text-lg uppercase tracking-tight text-white">
+                  Pitching Stats <span className="text-white/50 text-sm normal-case">(only fill for players who pitched)</span>
+                </h3>
+                {/* Add Pitcher dropdown for players not in batting stats */}
+                {getAvailablePitchers().length > 0 && (
+                  <div className="flex items-center gap-2">
+                    <span className="text-white/50 text-sm">Add pitcher:</span>
+                    <select
+                      onChange={(e) => {
+                        if (e.target.value) {
+                          handleAddPitcher(e.target.value);
+                          e.target.value = "";
+                        }
+                      }}
+                      className="bg-white/5 border border-teal/50 text-teal text-sm px-3 py-1.5 rounded hover:bg-white/10 transition-colors"
+                      defaultValue=""
+                    >
+                      <option value="" className="bg-dark text-white">Select player...</option>
+                      {getAvailablePitchers().map((player) => (
+                        <option key={player._id} value={player._id} className="bg-dark text-white">
+                          #{player.jerseyNumber} {player.name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                )}
+              </div>
               <div className="bg-white/5 border border-white/10 rounded-lg overflow-hidden">
                 <div className="overflow-x-auto">
                   <table className="min-w-full">
@@ -976,7 +1047,7 @@ export default function StatsEntryPage() {
                 </div>
                 {parsedStats.filter((s) => s.matchedPlayerId).length === 0 && (
                   <div className="px-4 py-6 text-center text-white/50 text-sm">
-                    Match players above to enter pitching stats
+                    Match players in batting stats above, or use &quot;Add pitcher&quot; to add players who only pitched
                   </div>
                 )}
               </div>
