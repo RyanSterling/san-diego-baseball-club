@@ -61,6 +61,7 @@ export interface PlayerStatLine {
     position?: string;
   };
   // Batting
+  plateAppearances?: number;
   atBats: number;
   hits: number;
   runs: number;
