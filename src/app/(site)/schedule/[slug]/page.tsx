@@ -208,7 +208,7 @@ export default async function GameDetailPage({ params }: PageProps) {
               </div>
 
               {/* Pitching */}
-              {playerStats.some((s) => s.inningsPitched && s.inningsPitched > 0) && (
+              {playerStats.some((s) => s.inningsPitched != null) && (
                 <div className="p-6 pt-0">
                   <h3 className="font-headline text-sm uppercase tracking-wide text-white/60 mb-3">Pitching</h3>
                   <div className="overflow-x-auto">
@@ -225,7 +225,7 @@ export default async function GameDetailPage({ params }: PageProps) {
                       </thead>
                       <tbody className="divide-y divide-white/5">
                         {playerStats
-                          .filter((s) => s.inningsPitched && s.inningsPitched > 0)
+                          .filter((s) => s.inningsPitched != null)
                           .map((stat, index) => (
                             <tr
                               key={index}
