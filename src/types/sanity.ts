@@ -141,6 +141,7 @@ export interface PlayerGameEntry {
   date: string;
   opponent: string;
   playerStat?: {
+    plateAppearances?: number;
     atBats: number;
     hits: number;
     runs: number;
