@@ -46,7 +46,7 @@ interface ParsedStat {
   hitsAllowed?: number | null;
 }
 
-type EntryMode = "select" | "manual" | "image";
+type EntryMode = "select" | "manual" | "image" | "edit";
 
 export default function StatsEntryPage() {
   const [games, setGames] = useState<Game[]>([]);
@@ -60,8 +60,10 @@ export default function StatsEntryPage() {
   const [gameScore, setGameScore] = useState<{ ourScore: number; theirScore: number } | null>(null);
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [clearing, setClearing] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
+  const [showClearModal, setShowClearModal] = useState(false);
 
   // Fetch games and roster on mount
   useEffect(() => {
@@ -129,6 +131,125 @@ export default function StatsEntryPage() {
     }));
     setParsedStats(manualStats);
     setGameScore({ ourScore: 0, theirScore: 0 });
+  };
+
+  // Load existing stats for editing
+  const handleLoadExistingStats = async () => {
+    if (!selectedGameId) return;
+
+    setLoading(true);
+    setError(null);
+
+    try {
+      const response = await fetch(`/api/game-stats?gameId=${selectedGameId}`);
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Failed to load stats");
+      }
+
+      if (data.game?.playerStats && data.game.playerStats.length > 0) {
+        const existingStats: ParsedStat[] = data.game.playerStats.map((stat: {
+          player: { _id: string; name: string; jerseyNumber: number };
+          plateAppearances?: number;
+          atBats?: number;
+          singles?: number;
+          hits?: number;
+          runs?: number;
+          rbi?: number;
+          walks?: number;
+          hitByPitch?: number;
+          sacrifices?: number;
+          strikeouts?: number;
+          doubles?: number;
+          triples?: number;
+          homeRuns?: number;
+          stolenBases?: number;
+          caughtStealing?: number;
+          inningsPitched?: number;
+          earnedRuns?: number;
+          pitchingStrikeouts?: number;
+          pitchingWalks?: number;
+          hitsAllowed?: number;
+        }) => ({
+          playerName: stat.player.name,
+          jerseyNumber: stat.player.jerseyNumber,
+          matchedPlayerId: stat.player._id,
+          plateAppearances: stat.plateAppearances || 0,
+          atBats: stat.atBats || 0,
+          singles: stat.singles || 0,
+          hits: stat.hits || 0,
+          runs: stat.runs || 0,
+          rbi: stat.rbi || 0,
+          walks: stat.walks || 0,
+          hitByPitch: stat.hitByPitch || 0,
+          sacrifices: stat.sacrifices || 0,
+          strikeouts: stat.strikeouts || 0,
+          doubles: stat.doubles || 0,
+          triples: stat.triples || 0,
+          homeRuns: stat.homeRuns || 0,
+          stolenBases: stat.stolenBases || 0,
+          caughtStealing: stat.caughtStealing || 0,
+          inningsPitched: stat.inningsPitched ?? null,
+          earnedRuns: stat.earnedRuns ?? null,
+          pitchingStrikeouts: stat.pitchingStrikeouts ?? null,
+          pitchingWalks: stat.pitchingWalks ?? null,
+          hitsAllowed: stat.hitsAllowed ?? null,
+        }));
+
+        setParsedStats(existingStats);
+        setGameScore({
+          ourScore: data.game.ourScore || 0,
+          theirScore: data.game.theirScore || 0,
+        });
+        setEntryMode("edit");
+      } else {
+        setError("No existing stats found for this game");
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to load stats");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Clear all stats for the game
+  const handleClearStats = async () => {
+    if (!selectedGameId) return;
+
+    setClearing(true);
+    setError(null);
+
+    try {
+      const response = await fetch("/api/save-stats", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ gameId: selectedGameId }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Failed to clear stats");
+      }
+
+      setSuccess("All stats cleared successfully!");
+      setShowClearModal(false);
+      setParsedStats([]);
+      setGameScore(null);
+      setEntryMode("select");
+
+      // Update the games list to reflect the change
+      setGames((prev) =>
+        prev.map((g) =>
+          g._id === selectedGameId ? { ...g, hasStats: false } : g
+        )
+      );
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to clear stats");
+    } finally {
+      setClearing(false);
+    }
   };
 
   const handleImageDrop = useCallback((e: React.DragEvent<HTMLDivElement>) => {
@@ -361,7 +482,30 @@ export default function StatsEntryPage() {
             <label className="block text-sm font-headline uppercase tracking-wide text-white/70 mb-4">
               How do you want to enter stats?
             </label>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-2xl">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 max-w-4xl">
+              {/* Edit Existing Stats - only show if game has stats */}
+              {games.find((g) => g._id === selectedGameId)?.hasStats && (
+                <button
+                  onClick={handleLoadExistingStats}
+                  disabled={loading}
+                  className="flex items-center gap-4 p-6 bg-white/5 border border-white/10 rounded-xl hover:bg-white/10 hover:border-purple-500/50 transition-colors text-left group disabled:opacity-50"
+                >
+                  <div className="w-14 h-14 bg-purple-500/20 rounded-lg flex items-center justify-center text-purple-400 group-hover:bg-purple-500 group-hover:text-white transition-colors">
+                    <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                    </svg>
+                  </div>
+                  <div>
+                    <h3 className="font-headline text-lg uppercase tracking-tight text-white">
+                      {loading ? "Loading..." : "Edit Existing"}
+                    </h3>
+                    <p className="text-white/50 text-sm mt-1">
+                      Modify current stats
+                    </p>
+                  </div>
+                </button>
+              )}
+
               {/* Manual Entry Option */}
               <button
                 onClick={handleStartManualEntry}
@@ -402,6 +546,21 @@ export default function StatsEntryPage() {
                 </div>
               </button>
             </div>
+
+            {/* Clear Stats Button - only show if game has stats */}
+            {games.find((g) => g._id === selectedGameId)?.hasStats && (
+              <div className="mt-6">
+                <button
+                  onClick={() => setShowClearModal(true)}
+                  className="text-pink hover:text-pink/80 text-sm transition-colors flex items-center gap-2"
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                  </svg>
+                  Clear all stats for this game
+                </button>
+              </div>
+            )}
           </div>
         )}
 
@@ -509,14 +668,16 @@ export default function StatsEntryPage() {
           <div className="mb-8">
             <div className="flex items-center justify-between mb-4">
               <h3 className="font-headline text-xl uppercase tracking-tight text-white">
-                {entryMode === "manual" ? (
+                {entryMode === "edit" ? (
+                  <>Editing Stats <span className="text-purple-400">({parsedStats.length} players)</span></>
+                ) : entryMode === "manual" ? (
                   <>Player Stats <span className="text-teal">({parsedStats.length} players)</span></>
                 ) : (
                   <>Extracted Stats <span className="text-orange">({parsedStats.length} players)</span></>
                 )}
               </h3>
               <div className="flex items-center gap-3">
-                {entryMode === "manual" && (
+                {(entryMode === "manual" || entryMode === "edit") && (
                   <button
                     onClick={handleAddPlayer}
                     className="flex items-center gap-1 text-teal hover:text-teal/80 text-sm transition-colors"
@@ -561,7 +722,7 @@ export default function StatsEntryPage() {
                       <th className="px-2 py-2 text-center text-xs font-headline uppercase tracking-wide text-white/70">K</th>
                       <th className="px-2 py-2 text-center text-xs font-headline uppercase tracking-wide text-white/70">SB</th>
                       <th className="px-2 py-2 text-center text-xs font-headline uppercase tracking-wide text-white/70">CS</th>
-                      {entryMode === "manual" && (
+                      {(entryMode === "manual" || entryMode === "edit") && (
                         <th className="px-2 py-2 text-center text-xs font-headline uppercase tracking-wide text-white/70"></th>
                       )}
                     </tr>
@@ -711,7 +872,7 @@ export default function StatsEntryPage() {
                             className="w-12 bg-white/5 border border-white/20 text-white text-center px-1 py-1 rounded text-sm"
                           />
                         </td>
-                        {entryMode === "manual" && (
+                        {(entryMode === "manual" || entryMode === "edit") && (
                           <td className="px-2 py-2 text-center">
                             <button
                               onClick={() => handleRemovePlayer(index)}
@@ -833,6 +994,53 @@ export default function StatsEntryPage() {
               <p className="text-white/50 text-sm mt-2">
                 {parsedStats.filter((s) => s.matchedPlayerId).length} of {parsedStats.length} players matched
               </p>
+            </div>
+          </div>
+        )}
+
+        {/* Clear Stats Confirmation Modal */}
+        {showClearModal && (
+          <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4">
+            <div className="bg-dark border border-white/20 rounded-xl p-6 max-w-md w-full">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-10 h-10 bg-pink/20 rounded-full flex items-center justify-center">
+                  <svg className="w-5 h-5 text-pink" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                  </svg>
+                </div>
+                <h3 className="font-headline text-xl uppercase tracking-tight text-white">
+                  Clear All Stats?
+                </h3>
+              </div>
+              <p className="text-white/70 mb-6">
+                This will permanently delete all player stats and the game score for this game. This action cannot be undone.
+              </p>
+              <div className="flex gap-3 justify-end">
+                <button
+                  onClick={() => setShowClearModal(false)}
+                  disabled={clearing}
+                  className="px-4 py-2 bg-white/10 text-white rounded-lg hover:bg-white/20 transition-colors disabled:opacity-50"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleClearStats}
+                  disabled={clearing}
+                  className="px-4 py-2 bg-pink text-white rounded-lg hover:bg-pink/90 transition-colors disabled:opacity-50 flex items-center gap-2"
+                >
+                  {clearing ? (
+                    <>
+                      <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                      </svg>
+                      Clearing...
+                    </>
+                  ) : (
+                    "Clear All Stats"
+                  )}
+                </button>
+              </div>
             </div>
           </div>
         )}
