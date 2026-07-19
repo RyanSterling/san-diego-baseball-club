@@ -46,6 +46,13 @@ export default async function GameDetailPage({ params }: PageProps) {
   const hasResult = game.result && game.ourScore !== undefined && game.theirScore !== undefined;
   const playerStats = game.playerStats || [];
 
+  // Calculate team hits from player stats if not manually set
+  const calculatedOurHits = playerStats.reduce((sum, stat) => sum + (stat.hits || 0), 0);
+  const gameWithHits = {
+    ...game,
+    ourHits: game.ourHits ?? (playerStats.length > 0 ? calculatedOurHits : undefined),
+  };
+
   return (
     <div>
       {/* Hero Header with Gradient */}
@@ -138,7 +145,7 @@ export default async function GameDetailPage({ params }: PageProps) {
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
 
           {/* Inning-by-Inning Box Score */}
-          {hasResult && <BoxScore game={game} />}
+          {hasResult && <BoxScore game={gameWithHits} />}
 
           {/* Game Recap */}
           {game.recap && game.recap.length > 0 && (
