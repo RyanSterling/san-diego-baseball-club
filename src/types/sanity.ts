@@ -72,6 +72,8 @@ export interface PlayerStatLine {
   triples: number;
   homeRuns: number;
   stolenBases: number;
+  hitByPitch?: number;
+  sacrifices?: number;
   // Pitching (optional)
   inningsPitched?: number;
   earnedRuns?: number;
