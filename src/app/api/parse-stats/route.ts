@@ -84,24 +84,31 @@ export async function POST(request: Request) {
               type: "text",
               text: `You are a baseball statistics expert. Extract player stats from this stat sheet image.
 
-IMPORTANT: The stat sheet columns are in this EXACT order:
-BO (batting order) | Name | PA | AB | 1B | 2B | 3B | HR | RUNS | RBI | BB | HBP | SAC | SO | SB | CS | AVG | OB | SLG | ERRS
+CRITICAL COLUMN ORDER - Read each column EXACTLY as labeled:
+BO | Name | PA | AB | 1B | 2B | 3B | HR | RUNS | RBI | BB | HBP | SAC | SO | SB | CS
 
-Column definitions:
-- PA = Plate Appearances (NOT the same as AB)
-- AB = At Bats (different from PA - PA includes walks, HBP, sac)
-- 1B = Singles (base hits that are NOT doubles, triples, or home runs)
-- 2B = Doubles
-- 3B = Triples
-- HR = Home Runs
-- RUNS = Runs scored
-- RBI = Runs Batted In
-- BB = Walks
-- HBP = Hit By Pitch
-- SAC = Sacrifices
-- SO = Strikeouts
-- SB = Stolen Bases
-- CS = Caught Stealing
+IMPORTANT: There is NO "H" or "Hits" column in the stat sheet!
+- The columns go: ... HR | RUNS | RBI | BB ...
+- You must CALCULATE "hits" as: 1B + 2B + 3B + HR (do NOT read from any column)
+- "runs" comes from the RUNS column (runs scored by the player)
+- "rbi" comes from the RBI column (runs batted in)
+- "walks" comes from the BB column
+
+Column-to-field mapping:
+- PA column → "plateAppearances"
+- AB column → "atBats"
+- 1B column → "singles" (NOT total hits!)
+- 2B column → "doubles"
+- 3B column → "triples"
+- HR column → "homeRuns"
+- RUNS column → "runs" (this is runs SCORED, NOT hits!)
+- RBI column → "rbi"
+- BB column → "walks"
+- HBP column → "hitByPitch"
+- SAC column → "sacrifices"
+- SO column → "strikeouts"
+- SB column → "stolenBases"
+- CS column → "caughtStealing"
 
 Here are the players on the team roster (try to match names/numbers to these):
 ${playerList}
@@ -113,19 +120,19 @@ Return a JSON object with this exact structure:
       "playerName": "Name from stat sheet",
       "jerseyNumber": null,
       "matchedPlayerId": "player ID from roster if matched, or null",
-      "plateAppearances": 5,
-      "atBats": 4,
-      "singles": 2,
+      "plateAppearances": 0,
+      "atBats": 0,
+      "singles": 0,
       "doubles": 0,
       "triples": 0,
       "homeRuns": 0,
-      "hits": 2,
-      "runs": 1,
-      "rbi": 2,
-      "walks": 1,
+      "hits": 0,
+      "runs": 0,
+      "rbi": 0,
+      "walks": 0,
       "hitByPitch": 0,
       "sacrifices": 0,
-      "strikeouts": 1,
+      "strikeouts": 0,
       "stolenBases": 0,
       "caughtStealing": 0,
       "inningsPitched": null,
@@ -136,20 +143,21 @@ Return a JSON object with this exact structure:
     }
   ],
   "gameScore": {
-    "ourScore": 5,
-    "theirScore": 3
+    "ourScore": 0,
+    "theirScore": 0
   },
   "confidence": "high/medium/low",
   "notes": "Any issues or uncertainties"
 }
 
-CRITICAL:
-- ONLY include players that match someone on the roster above - SKIP any players not on the roster
-- "hits" should equal singles + doubles + triples + homeRuns
-- Read columns carefully - PA and AB are DIFFERENT columns
-- The 1B column contains SINGLES only, not total hits
-- Use 0 for batting stats if not visible, null for pitching stats
-- Only include pitching stats if the player actually pitched
+CRITICAL RULES:
+1. ONLY include players that match someone on the roster above - SKIP any players not on the roster
+2. "hits" = singles + doubles + triples + homeRuns (CALCULATE this, do NOT read from a column!)
+3. "runs" = value from RUNS column (runs SCORED by player crossing home plate)
+4. "rbi" = value from RBI column (runs batted IN by this player)
+5. DO NOT confuse RUNS with hits - they are completely different stats!
+6. Use 0 for batting stats if not visible, null for pitching stats
+7. Only include pitching stats if the player actually pitched
 Return ONLY valid JSON, no other text.`,
             },
           ],
