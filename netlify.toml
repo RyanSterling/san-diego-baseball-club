@@ -3,8 +3,14 @@
   publish = ".next"
 
 [functions]
-  # Increase function timeout for AI extraction (requires Pro plan for 60s)
+  # Increase function timeout for AI extraction
   node_bundler = "esbuild"
+  # External modules that shouldn't be bundled
+  external_node_modules = ["@anthropic-ai/sdk"]
+
+# Background functions allow up to 15 minutes, but for API routes we use regular functions
+# On Netlify Pro/Business, regular functions can have up to 26 seconds by default
+# For longer operations, we can use on-demand builders or background functions
 
 [[plugins]]
   package = "@netlify/plugin-nextjs"

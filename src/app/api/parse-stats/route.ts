@@ -3,7 +3,7 @@ import Anthropic from "@anthropic-ai/sdk";
 import { client } from "@/lib/sanity/client";
 import { activePlayersQuery } from "@/lib/sanity/queries";
 
-// Extend Netlify function timeout (max 60s on Pro plan)
+// Note: maxDuration only works with Vercel. For Netlify, timeout is configured in netlify.toml
 export const maxDuration = 60;
 
 interface Player {
@@ -65,7 +65,7 @@ export async function POST(request: Request) {
       apiKey: process.env.ANTHROPIC_API_KEY,
     });
 
-    const response = await anthropic.messages.create({
+    const stream = anthropic.messages.stream({
       model: "claude-sonnet-4-5",
       max_tokens: 4096,
       messages: [
@@ -164,6 +164,9 @@ Return ONLY valid JSON, no other text.`,
         },
       ],
     });
+
+    // Wait for complete response
+    const response = await stream.finalMessage();
 
     // Extract text from response
     const textContent = response.content.find((c) => c.type === "text");
