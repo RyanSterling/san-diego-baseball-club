@@ -46,7 +46,7 @@ interface ParsedStat {
   hitsAllowed?: number | null;
 }
 
-type EntryMode = "select" | "manual" | "image" | "edit";
+type EntryMode = "select" | "manual" | "csv" | "image" | "edit";
 
 export default function StatsEntryPage() {
   const [games, setGames] = useState<Game[]>([]);
@@ -56,6 +56,7 @@ export default function StatsEntryPage() {
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [imageData, setImageData] = useState<string | null>(null);
   const [mimeType, setMimeType] = useState<string>("image/jpeg");
+  const [csvData, setCsvData] = useState<string>("");
   const [parsedStats, setParsedStats] = useState<ParsedStat[]>([]);
   const [gameScore, setGameScore] = useState<{ ourScore: number; theirScore: number } | null>(null);
   const [loading, setLoading] = useState(false);
@@ -314,6 +315,40 @@ export default function StatsEntryPage() {
     }
   };
 
+  const handleParseCsv = async () => {
+    if (!csvData.trim()) return;
+
+    setLoading(true);
+    setError(null);
+    setParsedStats([]);
+    setGameScore(null);
+
+    try {
+      const response = await fetch("/api/parse-csv", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ csv: csvData }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Failed to parse CSV");
+      }
+
+      if (data.parsedStats?.players) {
+        setParsedStats(data.parsedStats.players);
+      }
+      if (data.parsedStats?.gameScore) {
+        setGameScore(data.parsedStats.gameScore);
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to parse CSV");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   // Add a new empty player row for manual entry
   const handleAddPlayer = () => {
     setParsedStats((prev) => [
@@ -551,12 +586,32 @@ export default function StatsEntryPage() {
                 </button>
               )}
 
-              {/* Manual Entry Option */}
+              {/* CSV Paste Option */}
               <button
-                onClick={handleStartManualEntry}
+                onClick={() => setEntryMode("csv")}
                 className="flex items-center gap-4 p-6 bg-white/5 border border-white/10 rounded-xl hover:bg-white/10 hover:border-teal/50 transition-colors text-left group"
               >
                 <div className="w-14 h-14 bg-teal/20 rounded-lg flex items-center justify-center text-teal group-hover:bg-teal group-hover:text-dark transition-colors">
+                  <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                  </svg>
+                </div>
+                <div>
+                  <h3 className="font-headline text-lg uppercase tracking-tight text-white">
+                    Paste CSV
+                  </h3>
+                  <p className="text-white/50 text-sm mt-1">
+                    Paste stats from spreadsheet
+                  </p>
+                </div>
+              </button>
+
+              {/* Manual Entry Option */}
+              <button
+                onClick={handleStartManualEntry}
+                className="flex items-center gap-4 p-6 bg-white/5 border border-white/10 rounded-xl hover:bg-white/10 hover:border-white/30 transition-colors text-left group"
+              >
+                <div className="w-14 h-14 bg-white/10 rounded-lg flex items-center justify-center text-white/70 group-hover:bg-white/20 group-hover:text-white transition-colors">
                   <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                   </svg>
@@ -603,6 +658,48 @@ export default function StatsEntryPage() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                   </svg>
                   Clear all stats for this game
+                </button>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* CSV Paste - shown when csv mode selected */}
+        {selectedGameId && entryMode === "csv" && !parsedStats.length && (
+          <div className="mb-8">
+            <div className="flex items-center justify-between mb-4">
+              <label className="block text-sm font-headline uppercase tracking-wide text-white/70">
+                Paste CSV Data
+              </label>
+              <button
+                onClick={() => {
+                  setEntryMode("select");
+                  setCsvData("");
+                }}
+                className="text-white/50 hover:text-white text-sm transition-colors"
+              >
+                &larr; Back to options
+              </button>
+            </div>
+            <p className="text-white/50 text-sm mb-3">
+              Paste CSV with headers: Name, PA, AB, 1B, 2B, 3B, HR, RUNS, RBI, BB, HBP, SAC, SO, SB, CS
+            </p>
+            <textarea
+              value={csvData}
+              onChange={(e) => setCsvData(e.target.value)}
+              placeholder="BO,Name,PA,AB,1B,2B,3B,HR,RUNS,RBI,BB,HBP,SAC,SO,SB,CS&#10;1,Alex Smith,5,2,1,0,0,0,3,0,3,0,0,0,3,0&#10;2,Ryan Sterling,5,4,3,0,0,0,1,2,1,0,0,1,4,0"
+              className="w-full h-64 bg-white/5 border border-white/20 text-white px-4 py-3 rounded-lg focus:border-teal focus:ring-2 focus:ring-teal/20 focus:outline-none font-mono text-sm"
+            />
+
+            {/* Parse Button */}
+            {csvData.trim() && (
+              <div className="mt-6">
+                <button
+                  onClick={handleParseCsv}
+                  disabled={loading}
+                  className="bg-teal text-dark py-3 px-8 rounded-lg font-headline uppercase tracking-wide hover:bg-teal/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                >
+                  {loading ? "Parsing..." : "Parse CSV"}
                 </button>
               </div>
             )}
