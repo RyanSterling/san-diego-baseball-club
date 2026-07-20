@@ -65,7 +65,7 @@ export async function POST(request: Request) {
       apiKey: process.env.ANTHROPIC_API_KEY,
     });
 
-    const stream = anthropic.messages.stream({
+    const response = await anthropic.messages.create({
       model: "claude-sonnet-4-5",
       max_tokens: 4096,
       messages: [
@@ -164,9 +164,6 @@ Return ONLY valid JSON, no other text.`,
         },
       ],
     });
-
-    // Wait for complete response
-    const response = await stream.finalMessage();
 
     // Extract text from response
     const textContent = response.content.find((c) => c.type === "text");
