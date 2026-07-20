@@ -82,10 +82,8 @@ export default async function HomePage({ searchParams }: PageProps) {
   const seasonSlug = await getSeasonSlug(params.season);
   const { settings, selectedSeason, rosterWithStats, games } = await getHomeData(seasonSlug);
 
-  // Split games into upcoming and past
+  // Games are already sorted by date ascending from the query
   const now = new Date();
-  const upcomingGames = games.filter((g) => new Date(g.date) >= now);
-  const pastGames = games.filter((g) => new Date(g.date) < now).reverse();
 
   return (
     <div>
@@ -137,76 +135,51 @@ export default async function HomePage({ searchParams }: PageProps) {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-white/5">
-                  {/* Upcoming Games */}
-                  {upcomingGames.slice(0, 5).map((game) => (
-                    <tr key={game._id} className="hover:bg-white/5 transition-colors group relative">
-                      <td className="px-4 py-3 whitespace-nowrap">
-                        <Link href={`/schedule/${game.slug}`} className="absolute inset-0 z-10" />
-                        <div className="font-medium text-white">{formatDate(game.date)}</div>
-                        <div className="text-white/50 text-sm">{formatTime(game.date)}</div>
-                      </td>
-                      <td className="px-4 py-3">
-                        <div className="flex items-center gap-2">
-                          <span className={`text-xs font-headline uppercase px-1.5 py-0.5 ${
-                            game.homeOrAway === "home"
-                              ? "bg-teal text-dark"
-                              : "bg-white/10 text-teal"
-                          }`}>
-                            {game.homeOrAway === "home" ? "vs" : "@"}
-                          </span>
-                          <span className="font-medium text-white">{game.opponent}</span>
-                        </div>
-                      </td>
-                      <td className="px-4 py-3 text-white/60 hidden sm:table-cell">{game.location}</td>
-                      <td className="px-4 py-3 text-center">
-                        <span className="text-white/40 text-sm">Upcoming</span>
-                      </td>
-                    </tr>
-                  ))}
-
-                  {/* Past Games */}
-                  {pastGames.slice(0, upcomingGames.length > 0 ? 3 : 8).map((game) => (
-                    <tr key={game._id} className="hover:bg-white/5 transition-colors group relative">
-                      <td className="px-4 py-3 whitespace-nowrap">
-                        <Link href={`/schedule/${game.slug}`} className="absolute inset-0 z-10" />
-                        <div className="font-medium text-white/70">{formatDate(game.date)}</div>
-                        <div className="text-white/40 text-sm">{formatTime(game.date)}</div>
-                      </td>
-                      <td className="px-4 py-3">
-                        <div className="flex items-center gap-2">
-                          <span className={`text-xs font-headline uppercase px-1.5 py-0.5 ${
-                            game.homeOrAway === "home"
-                              ? "bg-teal text-dark"
-                              : "bg-white/10 text-teal"
-                          }`}>
-                            {game.homeOrAway === "home" ? "vs" : "@"}
-                          </span>
-                          <span className="font-medium text-white/70">{game.opponent}</span>
-                        </div>
-                      </td>
-                      <td className="px-4 py-3 text-white/40 hidden sm:table-cell">{game.location}</td>
-                      <td className="px-4 py-3 text-center">
-                        {game.result ? (
-                          <span className="inline-flex items-center gap-2">
-                            <span className={`font-headline text-lg ${
-                              game.result === "W"
-                                ? "text-win"
-                                : game.result === "L"
-                                ? "text-loss"
-                                : "text-tie"
+                  {games.map((game) => {
+                    const isPast = new Date(game.date) < now;
+                    return (
+                      <tr key={game._id} className="hover:bg-white/5 transition-colors group relative">
+                        <td className="px-4 py-3 whitespace-nowrap">
+                          <Link href={`/schedule/${game.slug}`} className="absolute inset-0 z-10" />
+                          <div className={`font-medium ${isPast ? "text-white/70" : "text-white"}`}>{formatDate(game.date)}</div>
+                          <div className={isPast ? "text-white/40 text-sm" : "text-white/50 text-sm"}>{formatTime(game.date)}</div>
+                        </td>
+                        <td className="px-4 py-3">
+                          <div className="flex items-center gap-2">
+                            <span className={`text-xs font-headline uppercase px-1.5 py-0.5 ${
+                              game.homeOrAway === "home"
+                                ? "bg-teal text-dark"
+                                : "bg-white/10 text-teal"
                             }`}>
-                              {game.result}
+                              {game.homeOrAway === "home" ? "vs" : "@"}
                             </span>
-                            <span className="font-medium text-white">
-                              {game.ourScore}-{game.theirScore}
+                            <span className={`font-medium ${isPast ? "text-white/70" : "text-white"}`}>{game.opponent}</span>
+                          </div>
+                        </td>
+                        <td className={`px-4 py-3 hidden sm:table-cell ${isPast ? "text-white/40" : "text-white/60"}`}>{game.location}</td>
+                        <td className="px-4 py-3 text-center">
+                          {game.result ? (
+                            <span className="inline-flex items-center gap-2">
+                              <span className={`font-headline text-lg ${
+                                game.result === "W"
+                                  ? "text-win"
+                                  : game.result === "L"
+                                  ? "text-loss"
+                                  : "text-tie"
+                              }`}>
+                                {game.result}
+                              </span>
+                              <span className="font-medium text-white">
+                                {game.ourScore}-{game.theirScore}
+                              </span>
                             </span>
-                          </span>
-                        ) : (
-                          <span className="text-white/40">-</span>
-                        )}
-                      </td>
-                    </tr>
-                  ))}
+                          ) : (
+                            <span className="text-white/40 text-sm">Upcoming</span>
+                          )}
+                        </td>
+                      </tr>
+                    );
+                  })}
                 </tbody>
               </table>
             </div>
