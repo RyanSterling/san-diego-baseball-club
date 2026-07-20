@@ -188,7 +188,7 @@ export default async function GameDetailPage({ params }: PageProps) {
                           key={index}
                           className="hover:bg-white/5 transition-colors"
                         >
-                          <td className="py-2 px-3">
+                          <td className="py-2 px-3 whitespace-nowrap">
                             <Link href={`/roster/${stat.player.slug}`} className="group">
                               <span className="!text-white/50">#{stat.player.jerseyNumber}</span>{" "}
                               <span className="!text-white group-hover:!text-teal transition-colors">{stat.player.name}</span>
@@ -233,7 +233,7 @@ export default async function GameDetailPage({ params }: PageProps) {
                               key={index}
                               className="hover:bg-white/5 transition-colors"
                             >
-                              <td className="py-2 px-3">
+                              <td className="py-2 px-3 whitespace-nowrap">
                                 <Link href={`/roster/${stat.player.slug}`} className="group">
                                   <span className="!text-white/50">#{stat.player.jerseyNumber}</span>{" "}
                                   <span className="!text-white group-hover:!text-teal transition-colors">{stat.player.name}</span>
